@@ -39,3 +39,10 @@ CREATE TABLE Payment (
     status ENUM('awaiting payment', 'paid'),
     FOREIGN KEY (billID, bill_number) REFERENCES Bill(billID, bill_number)
 );
+
+CREATE TABLE Users (
+    userID BIGINT PRIMARY KEY AUTO_INCREMENT,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    account_type ENUM('client', 'admin') NOT NULL
+);
