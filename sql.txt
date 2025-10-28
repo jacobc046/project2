@@ -1,0 +1,41 @@
+CREATE TABLE Quote ( 
+    quoteID BIGINT, 
+    requestID BIGINT NOT NULL,
+    response_number INT,
+    status ENUM('awaiting client', 'awaiting admin') NOT NULL, 
+    price NUMERIC(10,2) NOT NULL, date DATETIME NOT NULL, 
+    notes TEXT, PRIMARY KEY (quoteID, response_number), 
+    FOREIGN KEY (requestID) REFERENCES Requests(requestID) );
+
+CREATE TABLE Orders (
+    orderID BIGINT PRIMARY KEY,
+    quoteID BIGINT,
+    response_number INT,
+    address VARCHAR(100) NOT NULL,
+    number_of_rooms INT NOT NULL,
+    date DATETIME NOT NULL,
+    price NUMERIC(8,2) NOT NULL,
+    notes TEXT,
+    FOREIGN KEY (quoteID, response_number) REFERENCES Quote(quoteID, response_number)
+    );
+
+CREATE TABLE Bill (
+    billID BIGINT,
+    bill_number INT,
+    orderID BIGINT,
+    price NUMERIC(8,2) NOT NULL,
+    status ENUM('awaiting client', 'awaiting admin') NOT NULL,
+    notes TEXT,
+    PRIMARY KEY (billID, bill_number),
+    FOREIGN KEY (orderID) REFERENCES Orders(orderID)
+);
+
+CREATE TABLE Payment (
+    paymentID BIGINT PRIMARY KEY,
+    billID BIGINT,
+    bill_number INT,
+    price NUMERIC(8,2) NOT NULL,
+    card_number char(16) NOT NULL,
+    status ENUM('awaiting payment', 'paid'),
+    FOREIGN KEY (billID, bill_number) REFERENCES Bill(billID, bill_number)
+);
