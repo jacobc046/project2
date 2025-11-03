@@ -7,27 +7,46 @@ document.addEventListener("DOMContentLoaded", function () {
     signUpBtn.onclick = function () {
       const firstNameInput = document.querySelector("#first-name-input");
       const lastNameInput = document.querySelector("#last-name-input");
-      const usernameInput = document.querySelector("#username-input");
       const passwordInput = document.querySelector("#password-input");
-      const isClient = document.querySelector('#is-client');
+      const emailInput = document.querySelector("#email-input");
+      const phoneNumberInput = document.querySelector("#phone-number-input");
+      const streetInput = document.querySelector("#street-input");
+      const cityInput = document.querySelector("#city-input");
+      const stateInput = document.querySelector("#state-input");
+      const zipcodeInput = document.querySelector("#zipcode-input");
+      const cardNumberInput = document.querySelector("#card-number-input");
+      const exDateInput = document.querySelector("#ex-date-input");
+      const cvvInput = document.querySelector("#cvv-code-input");
 
-      const selectedValue = isClient ? 'client' : 'admin';
+      const isClient = document.querySelector("#is-client");
+
+      const selectedValue = isClient ? "client" : "admin";
 
       fetch("http://localhost:5050/signup", {
         headers: { "Content-type": "application/json" },
         method: "POST",
         body: JSON.stringify({
-            username: usernameInput.value,
-            password: passwordInput.value,
-            firstName: firstNameInput.value,
-            lastName: lastNameInput.value,
-            account_type: selectedValue
+          //username: usernameInput.value,
+          password: passwordInput.value,
+          firstName: firstNameInput.value,
+          lastName: lastNameInput.value,
+          email: emailInput.value,
+          phoneNumber: phoneNumberInput.value,
+          street: streetInput.value,
+          city: cityInput.value,
+          state: stateInput.value,
+          zipcode: zipcodeInput.value,
+          cardNumber: cardNumberInput.value,
+          exDate: exDateInput.value,
+          cvv: cvvInput.value,
+          account_type: selectedValue,
         }),
       })
         .then((response) => response.json())
         .then((data) => {
           console.log("Signup response:", data);
-          window.location.href = selectedValue == 'admin' ? "/adminHome.html" : "/clientHome.html";
+          window.location.href =
+            selectedValue == "admin" ? "/adminHome.html" : "/clientHome.html";
         })
         .catch((err) => console.error(err));
     };

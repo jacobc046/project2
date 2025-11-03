@@ -1,8 +1,8 @@
 // database services, accessbile by DbService methods.
 
-const mysql = require('mysql');
-const dotenv = require('dotenv');
-const bcrypt = require('bcrypt');
+const mysql = require("mysql");
+const dotenv = require("dotenv");
+const bcrypt = require("bcrypt");
 const express = require("express");
 const cors = require("cors");
 
@@ -13,7 +13,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-let instance = null; 
+let instance = null;
 
 console.log("HOST: " + process.env.HOST);
 console.log("DB USER: " + process.env.DB_USER);
@@ -37,13 +37,13 @@ connection.connect((err) => {
 });
 
 async function hashPassword(plainPassword) {
-  const salt = await bcrypt.genSalt(10); 
+  const salt = await bcrypt.genSalt(10);
   const hash = await bcrypt.hash(plainPassword, salt);
   return hash;
 }
 
 class DbService {
-    static getDbServiceInstance() {
+  static getDbServiceInstance() {
     // only one instance is sufficient
     return instance ? instance : new DbService();
   }
@@ -59,18 +59,26 @@ app.post("/signup", async (req, result) => {
 
     const insertUserId = await new Promise((resolve, reject) => {
       const query = `
-        INSERT INTO Users (username, password, first_name, last_name, account_type)
-        VALUES (?, ?, ?, ?, ?)
+        INSERT INTO Users (email, password, first_name, last_name, phone_number, street, city, state, zipcode, card_number, ex_date, cvv, account_type)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `;
 
       connection.query(
         query,
         [
-          userData.username,
+          userData.email,
           hashedPassword,
           userData.firstName,
           userData.lastName,
-          userData["account_type"]
+          userData.phoneNumber,
+          userData.street,
+          userData.city,
+          userData.state,
+          userData.zipcode,
+          userData.cardNumber,
+          userData.exDate,
+          userData.cvv,
+          userData["account_type"],
         ],
         (err, result) => {
           if (err) reject(err);
@@ -80,10 +88,11 @@ app.post("/signup", async (req, result) => {
     });
 
     result.json({ success: true, userId: insertUserId });
-
   } catch (error) {
     console.error("app: signup error:", error);
-    result.status(500).json({ success: false, error: "Server error during signup" });
+    result
+      .status(500)
+      .json({ success: false, error: "Server error during signup" });
   }
 });
 
