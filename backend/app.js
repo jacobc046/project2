@@ -120,7 +120,7 @@ app.post("/signin", async (req, result) => {
 
   } catch (error) {
     console.error("app: signup error:", error);
-    return res.status(500).json({ success: false, error: "Server error during signin" });
+    return result.status(500).json({ success: false, error: "Server error during signin" });
   }
 });
 
@@ -155,7 +155,7 @@ app.post("/signin", async (req, result) => {
 
   } catch (error) {
     console.error("app: signup error:", error);
-    return res.status(500).json({ success: false, error: "Server error during signin" });
+    return result.status(500).json({ success: false, error: "Server error during signin" });
   }
 });
 
