@@ -49,41 +49,42 @@ class DbService {
   }
 }
 
-app.post("/signup", (request, response) => {
-  console.log("app: sign up request body:", request.body);
+app.post("/signup", async (req, result) => {
+  console.log("app: sign up request body:", req.body);
 
-  const userData = request.body;
-  const db = DbService.getDbServiceInstance();
-  
-  
-  const result = async ()  => {
-      const hashedPassword = await hashPassword(userData.password);
+  const userData = req.body;
 
-      try{
-        // use await to call an asynchronous function
-        const insertUser = await new Promise((resolve, reject) => 
-        {
-            const query = `INSERT INTO Users (username, password, firstname, lastname, account-type)
-            VALUES (?, ?, ?, ?, ?);`;
-            connection.query(query, [
-              userData.username,
-              hashedPassword,
-              userData.firstName,
-              userData.lastName,
-              userData.account-type
-            ], (err, result) => {
-                if(err) reject(new Error(err.message));
-                else resolve(result.insertId);
-            });
-        });
-      } catch(error){
-            console.log("app.js: ERROR:", error);
-      }
-   }
+  try {
+    const hashedPassword = await hashPassword(userData.password);
 
-  result
-    .then((data) => response.json({ data: data })) 
-    .catch((err) => console.log("app: err: ", err));
+    const insertUserId = await new Promise((resolve, reject) => {
+      const query = `
+        INSERT INTO Users (username, password, first_name, last_name, account_type)
+        VALUES (?, ?, ?, ?, ?)
+      `;
+
+      connection.query(
+        query,
+        [
+          userData.username,
+          hashedPassword,
+          userData.firstName,
+          userData.lastName,
+          userData["account_type"]
+        ],
+        (err, result) => {
+          if (err) reject(err);
+          else resolve(result.insertId);
+        }
+      );
+    });
+
+    result.json({ success: true, userId: insertUserId });
+
+  } catch (error) {
+    console.error("app: signup error:", error);
+    result.status(500).json({ success: false, error: "Server error during signup" });
+  }
 });
 
 app.listen(5050, () => {

@@ -1,3 +1,12 @@
+CREATE TABLE Requests (
+    requestID BIGINT PRIMARY KEY,
+    address varchar(100) NOT NULL,
+    number_of_rooms INT NOT NULL,
+    date DATETIME NOT NULL,
+    budget DECIMAL(10,2) NOT NULL,
+    notes TEXT
+)
+
 CREATE TABLE Quote ( 
     quoteID BIGINT, 
     requestID BIGINT NOT NULL,
