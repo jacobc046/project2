@@ -78,7 +78,7 @@ app.post("/signup", async (req, result) => {
           userData.cardNumber,
           userData.exDate,
           userData.cvv,
-          userData["account_type"],
+          "client",
         ],
         (err, result) => {
           if (err) reject(err);

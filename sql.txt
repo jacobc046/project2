@@ -4,6 +4,7 @@ CREATE TABLE Requests (
     number_of_rooms INT NOT NULL,
     date DATETIME NOT NULL,
     budget DECIMAL(10,2) NOT NULL,
+    cleaning_type ENUM('basic', 'deep-clean', 'move-out') NOT NULL,
     notes TEXT
 )
 

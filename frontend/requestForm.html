@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="stylesheet.css" />
+    <title>Home</title>
+  </head>
+  <body>
+    <main>
+        <h1>Submit a request</h1>
+        <p>Number of rooms</p>
+        <input id="number-of-rooms-input" type="number">
+        <p>Budget</p>
+        <input id="budget-input" type="number">
+        <p>Service Date</p>
+        <input id="service-date-input" type="datetime-local">
+        <div>
+            <p>Cleaning Type</p>
+            <input type="radio" name="cleaning-type" value="basic">
+            <label>basic</label>
+            <input type="radio" name="cleaning-type" value="deep-clean" checked>
+            <label>deep-clean</label>
+            <input type="radio" name="cleaning-type" value="move-out">
+            <label>move-out</label>
+        </div>
+        <p>Notes</p>
+        <input id="notes-input" type="text">
+        <p>Image upload (up to 5)</p>
+        <input id="image-input-1" type="file">
+    </main>
+  </body>
+</html>
