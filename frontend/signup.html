@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="stylesheet.css" />
+    <title>Sign up</title>
+  </head>
+  <body>
+    <main>
+      <h1>Sign Up</h1>
+      <p>First Name:</p>
+      <input id="first-name-input" type="text" />
+      <p>Last name:</p>
+      <input id="last-name-input" type="text" />
+      <p>Username:</p>
+      <input id="username-input" type="text" />
+      <p>Password:</p>
+      <input id="password-input" type="password" />
+      <p>Account Type</p>
+      <input type="radio" name="account-type-input" value="admin">
+      <label for="admin">Admin</label>
+      <input id="is-client" type="radio" name="account-type-input" value="client" checked>
+      <label for="client">Client</label>
+      <br />
+      <button id="sign-up-btn" class="btn btn-secondary">Sign up</button>
+    </main>
+    <script src="signup.js"></script>
+  </body>
+</html>
