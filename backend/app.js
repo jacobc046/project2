@@ -42,13 +42,6 @@ async function hashPassword(plainPassword) {
   return hash;
 }
 
-class DbService {
-  static getDbServiceInstance() {
-    // only one instance is sufficient
-    return instance ? instance : new DbService();
-  }
-}
-
 app.post("/signup", async (req, result) => {
   console.log("app: sign up request body:", req.body);
 
@@ -93,6 +86,76 @@ app.post("/signup", async (req, result) => {
     result
       .status(500)
       .json({ success: false, error: "Server error during signup" });
+  }
+});
+
+app.post("/signin", async (req, result) => {
+  console.log("app: sign in request body:", req.body);
+
+  const userData = req.body;
+
+  try {
+    // 1. Fetch user by username
+    const user = await new Promise((resolve, reject) => {
+      const query = `SELECT email, password, account_type FROM Users WHERE username = ?`;
+      connection.query(query, [userData.email], (err, result) => {
+        if (err) reject(err);
+        else if (result.length === 0) resolve(null);
+        else resolve(result[0]);
+      });
+    });
+
+    if (!user) {
+      return  result.json({ success: false, message: "Invalid email or password" });
+    }
+    
+    // 2. Compare provided password with stored hash   
+    const match = await bcrypt.compare(userData.password, user.password);
+    
+    if (match) {      
+      return result.json({ success: true, email: user.email, account_type: user.account_type });
+    } else {
+      return result.json({ success: false, message: "Invalid email or password" });
+    }
+
+  } catch (error) {
+    console.error("app: signup error:", error);
+    return res.status(500).json({ success: false, error: "Server error during signin" });
+  }
+});
+
+app.post("/signin", async (req, result) => {
+  console.log("app: sign in request body:", req.body);
+
+  const userData = req.body;
+
+  try {
+    // 1. Fetch user by username
+    const user = await new Promise((resolve, reject) => {
+      const query = `SELECT email, password, account_type FROM Users WHERE username = ?`;
+      connection.query(query, [userData.email], (err, result) => {
+        if (err) reject(err);
+        else if (result.length === 0) resolve(null);
+        else resolve(result[0]);
+      });
+    });
+
+    if (!user) {
+      return  result.json({ success: false, message: "Invalid email or password" });
+    }
+    
+    // 2. Compare provided password with stored hash   
+    const match = await bcrypt.compare(userData.password, user.password);
+    
+    if (match) {      
+      return result.json({ success: true, email: user.email, account_type: user.account_type });
+    } else {
+      return result.json({ success: false, message: "Invalid email or password" });
+    }
+
+  } catch (error) {
+    console.error("app: signup error:", error);
+    return res.status(500).json({ success: false, error: "Server error during signin" });
   }
 });
 
