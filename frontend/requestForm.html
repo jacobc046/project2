@@ -1,37 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="stylesheet.css" />
-    <title>Home</title>
-  </head>
-  <body>
-    <main>
-        <h1>Submit a request</h1>
-        <p>Number of rooms</p>
-        <input id="number-of-rooms-input" type="number">
-        <p>Budget</p>
-        <input id="budget-input" type="number">
-        <p>Service Date</p>
-        <input id="service-date-input" type="datetime-local">
-        <div>
-            <p>Cleaning Type</p>
-            <input type="radio" name="cleaning-type" value="basic">
-            <label>basic</label>
-            <input type="radio" name="cleaning-type" value="deep-clean" checked>
-            <label>deep-clean</label>
-            <input type="radio" name="cleaning-type" value="move-out">
-            <label>move-out</label>
-        </div>
-        <p>Notes</p>
-        <input id="notes-input" type="text">
-        <p>Image upload, must be png or jpg</p>
-        <input id="image-input-1" type="file" accept=".png, .jpg">
-        <input id="image-input-2" type="file" accept=".png, .jpg">
-        <input id="image-input-3" type="file" accept=".png, .jpg">
-        <input id="image-input-4" type="file" accept=".png, .jpg">
-        <input id="image-input-5" type="file" accept=".png, .jpg">
-    </main>
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="stylesheet.css" />
+  <title>Home</title>
+</head>
+<body>
+  <main>
+    <h1>Submit a Request</h1>
+
+    <form id="request-form" method="POST" enctype="multipart/form-data">
+      
+      <label for="address-input">Address</label>
+      <input id="address-input" name="address" required>
+
+      <label for="number-of-rooms-input">Number of rooms</label>
+      <input id="number-of-rooms-input" name="rooms" type="number" required>
+
+      <label for="budget-input">Budget</label>
+      <input id="budget-input" name="budget" type="number" required>
+
+      <label for="service-date-input">Service Date</label>
+      <input id="service-date-input" name="serviceDate" type="datetime-local" required>
+
+      <fieldset>
+        <legend>Cleaning Type</legend>
+
+        <label>
+          <input type="radio" name="cleaningType" value="basic"> Basic
+        </label>
+
+        <label>
+          <input type="radio" name="cleaningType" value="deep-clean" checked> Deep Clean
+        </label>
+
+        <label>
+          <input type="radio" name="cleaningType" value="move-out"> Move Out
+        </label>
+      </fieldset>
+
+      <label for="notes-input">Notes (optional)</label>
+      <textarea id="notes-input" name="notes"></textarea>
+
+      <label for="image-input">Image upload (optional), PNG or JPG</label>
+      <input id="image-input-1" name="images" type="file" accept=".png,.jpg">
+      <input id="image-input-2" name="images" type="file" accept=".png,.jpg">
+      <input id="image-input-3" name="images" type="file" accept=".png,.jpg">
+      <input id="image-input-4" name="images" type="file" accept=".png,.jpg">
+      <input id="image-input-5" name="images" type="file" accept=".png,.jpg">
+
+      <button type="submit">Submit</button>
+
+    </form>
+  </main>
+
+  <script src="requestForm.js"></script>
+</body>
 </html>
