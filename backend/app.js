@@ -97,7 +97,7 @@ app.post("/signin", async (req, result) => {
   try {
     // 1. Fetch user by username
     const user = await new Promise((resolve, reject) => {
-      const query = `SELECT email, password, account_type FROM Users WHERE username = ?`;
+      const query = `SELECT email, password, account_type FROM Users WHERE email = ?`;
       connection.query(query, [userData.email], (err, result) => {
         if (err) reject(err);
         else if (result.length === 0) resolve(null);
@@ -106,57 +106,77 @@ app.post("/signin", async (req, result) => {
     });
 
     if (!user) {
-      return  result.json({ success: false, message: "Invalid email or password" });
-    }
-    
-    // 2. Compare provided password with stored hash   
-    const match = await bcrypt.compare(userData.password, user.password);
-    
-    if (match) {      
-      return result.json({ success: true, email: user.email, account_type: user.account_type });
-    } else {
-      return result.json({ success: false, message: "Invalid email or password" });
+      return result.json({
+        success: false,
+        message: "Invalid email or password",
+      });
     }
 
+    // 2. Compare provided password with stored hash
+    const match = await bcrypt.compare(userData.password, user.password);
+
+    if (match) {
+      return result.json({
+        success: true,
+        email: user.email,
+        account_type: user.account_type,
+      });
+    } else {
+      return result.json({
+        success: false,
+        message: "Invalid email or password",
+      });
+    }
   } catch (error) {
     console.error("app: signup error:", error);
-    return result.status(500).json({ success: false, error: "Server error during signin" });
+    return result
+      .status(500)
+      .json({ success: false, error: "Server error during signin" });
   }
 });
 
-app.post("/signin", async (req, result) => {
-  console.log("app: sign in request body:", req.body);
+//list of requests, just getting the clients name
+app.get("/requests", (req, res) => {
+  const status = req.query.status || "new";
+  const sql = `
+    SELECT r.requestID,
+           CONCAT(u.first_name, ' ', u.last_name) AS client_name
+    FROM Requests r
+    JOIN Users u ON u.client_id = r.client_id
+    WHERE r.status = ?
+    ORDER BY r.date DESC
+  `;
+  connection.query(sql, [status], (err, rows) => {
+    if (err)
+      return res.status(500).json({ success: false, error: err.message });
+    res.json(rows); // [{requestID, client_name}, ...]
+  });
+});
 
-  const userData = req.body;
-
-  try {
-    // 1. Fetch user by username
-    const user = await new Promise((resolve, reject) => {
-      const query = `SELECT email, password, account_type FROM Users WHERE username = ?`;
-      connection.query(query, [userData.email], (err, result) => {
-        if (err) reject(err);
-        else if (result.length === 0) resolve(null);
-        else resolve(result[0]);
-      });
-    });
-
-    if (!user) {
-      return  result.json({ success: false, message: "Invalid email or password" });
-    }
-    
-    // 2. Compare provided password with stored hash   
-    const match = await bcrypt.compare(userData.password, user.password);
-    
-    if (match) {      
-      return result.json({ success: true, email: user.email, account_type: user.account_type });
-    } else {
-      return result.json({ success: false, message: "Invalid email or password" });
-    }
-
-  } catch (error) {
-    console.error("app: signup error:", error);
-    return result.status(500).json({ success: false, error: "Server error during signin" });
-  }
+//full info for the request
+app.get("/requests/:id", (req, res) => {
+  const sql = `
+    SELECT r.requestID,
+           CONCAT(u.first_name, ' ', u.last_name) AS client_name,
+           r.address,
+           r.number_of_rooms,
+           r.date,
+           r.budget,
+           r.cleaning_type,
+           r.notes,
+           r.status
+    FROM Requests r
+    JOIN Users u ON u.client_id = r.client_id
+    WHERE r.requestID = ?
+    LIMIT 1
+  `;
+  connection.query(sql, [req.params.id], (err, rows) => {
+    if (err)
+      return res.status(500).json({ success: false, error: err.message });
+    if (!rows.length)
+      return res.status(404).json({ success: false, error: "Not found" });
+    res.json(rows[0]);
+  });
 });
 
 app.listen(5050, () => {

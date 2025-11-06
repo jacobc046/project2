@@ -1,12 +1,15 @@
 CREATE TABLE Requests (
-    requestID BIGINT PRIMARY KEY,
+    requestID BIGINT AUTO_INCREMENT PRIMARY KEY,
     address varchar(100) NOT NULL,
     number_of_rooms INT NOT NULL,
     date DATETIME NOT NULL,
     budget DECIMAL(10,2) NOT NULL,
     cleaning_type ENUM('basic', 'deep-clean', 'move-out') NOT NULL,
-    notes TEXT
-)
+    notes TEXT,
+    client_id INT NOT NULL, 
+    status ENUM('new', 'rejected', 'negotiation', 'accepted', 'canceled')
+    FOREIGN KEY (client_id) REFERENCES Users(client_id)
+);
 
 CREATE TABLE Quote ( 
     quoteID BIGINT, 
@@ -15,7 +18,8 @@ CREATE TABLE Quote (
     status ENUM('awaiting client', 'awaiting admin') NOT NULL, 
     price NUMERIC(10,2) NOT NULL, date DATETIME NOT NULL, 
     notes TEXT, PRIMARY KEY (quoteID, response_number), 
-    FOREIGN KEY (requestID) REFERENCES Requests(requestID) );
+    FOREIGN KEY (requestID) REFERENCES Requests(requestID) 
+);
 
 CREATE TABLE Orders (
     orderID BIGINT PRIMARY KEY,
