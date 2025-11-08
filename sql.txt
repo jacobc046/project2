@@ -7,7 +7,6 @@ CREATE TABLE Requests (
     cleaning_type ENUM('basic', 'deep-clean', 'move-out') NOT NULL,
     notes TEXT,
     client_id INT NOT NULL, 
-    status ENUM('new', 'rejected', 'negotiation', 'accepted', 'canceled')
     FOREIGN KEY (client_id) REFERENCES Users(client_id)
 );
 

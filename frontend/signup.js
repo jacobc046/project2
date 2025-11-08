@@ -18,15 +18,10 @@ document.addEventListener("DOMContentLoaded", function () {
       const exDateInput = document.querySelector("#ex-date-input");
       const cvvInput = document.querySelector("#cvv-code-input");
 
-      const isClient = document.querySelector("#is-client");
-
-      const selectedValue = isClient ? "client" : "admin";
-
       fetch("http://localhost:5050/signup", {
         headers: { "Content-type": "application/json" },
         method: "POST",
         body: JSON.stringify({
-          //username: usernameInput.value,
           password: passwordInput.value,
           firstName: firstNameInput.value,
           lastName: lastNameInput.value,
@@ -39,14 +34,12 @@ document.addEventListener("DOMContentLoaded", function () {
           cardNumber: cardNumberInput.value,
           exDate: exDateInput.value,
           cvv: cvvInput.value,
-          account_type: selectedValue,
         }),
       })
         .then((response) => response.json())
         .then((data) => {
           console.log("Signup response:", data);
-          window.location.href =
-            selectedValue == "admin" ? "/adminHome.html" : "/clientHome.html";
+          window.location.href = "/clientHome.html";
         })
         .catch((err) => console.error(err));
     };
