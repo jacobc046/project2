@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+</head>
+<body>
+    <main>
+        <h1>Dashboard</h1>
+
+        <h2>Frequent clients</h2> <!-- clients who completed most service orders -->
+        <div id="frequent-clients"></div>
+
+        <h2>Uncommitted clients</h2> <!-- 3 or more requests but no complete orders -->
+        <div id="uncommitted-clients"></div>
+
+        <h2>This months accepted quotes</h2> <!-- list all current month's accepted quotes -->
+        <div id="accepted-quotes"></div>
+
+        <h2>Prospective clients</h2> <!-- clients who registered but have never made a request -->
+        <div id="prospective-clients"></div>
+
+        <h2>Largest job</h2> <!-- service requests with largest number of rooms -->
+        <div id="largest-job"></div>
+
+        <h2>Overdue bills</h2> <!-- unpaid bills older than one week -->
+        <div id="overdue-bills"></div>
+
+        <h2>Bad clients</h2> <!-- clients who have overdue bills -->
+        <div id="bad-clients"></div>
+
+        <h2>Good clients</h2> <!-- clients who paid all bills within 24 hours -->
+        <div id="good-clients"></div>
+    </main>
+    <script src="dashboard.js"></script>
+</body>
+</html>

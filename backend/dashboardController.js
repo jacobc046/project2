@@ -22,4 +22,46 @@ async function getFrequentClients(req, res) {
   })
 }
 
-module.exports = { getFrequentClients, }
+async function getUncommittedClients(req, res) {
+  const query = `
+    SELECT r.client_id, u.first_name, u.last_name, u.email
+    FROM Requests r, Users u
+    GROUP BY client_id
+    HAVING COUNT(*) >= 3;
+  `;
+
+  connection.query(query, [], (err, result) => {
+    if (err) {
+      console.error("DB error", err);
+      return res.status(500).json({ success: false });
+    }    
+
+    res.json({ rows: result });
+  });
+}
+
+async function getAcceptedQuotes(req, res) {
+  const query = `
+    SELECT u.first_name, u.last_name, u.email, q.*, r.requestId
+    FROM Quote q, Users u, Requests r
+    WHERE q.status = 'accepted'
+    AND q.requestId = r.requestId
+    AND r.client_id = u.client_id;
+    AND q.date = MONTH(NOW());
+  `;
+
+  connection.query(query, [], (err, result) => {
+    if (err) {
+      console.error("DB error", err);
+      return res.status(500).json({ success: false });
+    }    
+
+    res.json({ rows: result });
+  });
+}
+
+module.exports = { 
+  getFrequentClients, 
+  getUncommittedClients, 
+  getAcceptedQuotes,
+}

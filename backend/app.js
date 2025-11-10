@@ -9,7 +9,7 @@ const upload = multer({ storage: multer.memoryStorage() });
 const { cleaningRequest } = require('./requestController');
 const { signin } = require("./signinController");
 const { signup } = require("./signupController");
-const { getFrequentClients } = require('./dashboardController');
+const { getFrequentClients, getUncommittedClients } = require('./dashboardController');
 
 const app = express();
 const session = require('./session');
@@ -32,6 +32,7 @@ app.post('/signin', signin);
 app.post('/signup', signup);
 app.post('/request', upload.array("images", 5), cleaningRequest);
 app.get('/frequentClients', getFrequentClients)
+app.get('/uncommittedClients', getUncommittedClients)
 
 app.listen(5050, () => {
   console.log("I am listening on the fixed port 5050.");
