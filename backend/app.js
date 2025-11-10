@@ -45,6 +45,7 @@ app.get("/requests", listRequests);
 app.get("/requests/:id", getRequestById);
 app.get("/requests/:id/image/:n", getRequestImage);
 app.get("/frequentClients", getFrequentClients);
+app.get("/uncommittedClients", getUncommittedClients);
 
 app.listen(5050, () => {
   console.log("I am listening on the fixed port 5050.");

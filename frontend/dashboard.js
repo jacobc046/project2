@@ -36,8 +36,6 @@ fetch('http://localhost:5050/uncommittedClients')
     .then(response => response.json())
     .then(result => {
         const rows = result.rows;
-        console.log(rows);
-        
 
         const container = document.getElementById("uncommitted-clients");
         container.innerHTML = "";
