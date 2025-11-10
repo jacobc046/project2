@@ -3,13 +3,46 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="stylesheet.css" />
-    <title>Home</title>
+    <title>Requests</title>
+    <link rel="stylesheet" href="adminHomeStyle.css" />
   </head>
   <body>
     <main>
-      <h1>Welcome Anna!</h1>
-      <a href="./dashboard.html">Dashboard</a>
+      <header class="navbar">
+        <div class="logo">Anna Johnson Dashboard</div>
+        <nav class="nav-links">
+          <a href="adminHome.html" class="active">Requests</a>
+          <a href="./dashboard.html">Dashboard</a>
+          <a>Orders</a>
+          <a>Billing</a>
+        </nav>
+        <div class="logout-section">
+          <a href="signin.html" class="logout-btn">Logout</a>
+        </div>
+      </header>
+      
+    <main class="layout">
+      <aside class="pane left">
+        <h2>Requests</h2>
+        <ul id="requestItems" class="list"></ul>
+      </aside>
+
+      <section class="pane right" id="detail">
+        <h2 id="d-name">Select a request</h2>
+        <p><strong>Address:</strong> <span id="d-address">—</span></p>
+        <p><strong>Rooms:</strong> <span id="d-rooms">—</span></p>
+        <p><strong>Date:</strong> <span id="d-date">—</span></p>
+        <p><strong>Budget:</strong> $<span id="d-budget">—</span></p>
+        <p><strong>Cleaning Type:</strong> <span id="d-cleaning">—</span></p>
+        <p><strong>Notes:</strong> <span id="d-notes">—</span></p>
+        <div><strong>Photos:</strong></div>
+        <div id="d-images"></div>
+
+        <button id="sendQuoteBtn">Send Quote</button>
+        <button id="rejectBtn">Reject Request</button>
+      </section>
     </main>
+
+    <script src="adminHome.js" defer></script>
   </body>
 </html>
