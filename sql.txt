@@ -21,7 +21,7 @@ CREATE TABLE Quote (
 );
 
 CREATE TABLE Orders (
-    orderID BIGINT PRIMARY KEY,
+    orderID BIGINT AUTO_INCREMENT PRIMARY KEY,
     quoteID BIGINT,
     response_number INT,
     address VARCHAR(100) NOT NULL,
@@ -29,27 +29,29 @@ CREATE TABLE Orders (
     date DATETIME NOT NULL,
     price NUMERIC(8,2) NOT NULL,
     notes TEXT,
-    FOREIGN KEY (quoteID, response_number) REFERENCES Quote(quoteID, response_number)
+    FOREIGN KEY (quoteID, response_number, client_id) REFERENCES Quote(quoteID, response_number, client_id)
     );
 
 CREATE TABLE Bill (
-    billID BIGINT,
+    billID BIGINT AUTO_INCREMENT,
     bill_number INT,
     orderID BIGINT,
     price NUMERIC(8,2) NOT NULL,
     status ENUM('awaiting client', 'awaiting admin') NOT NULL,
+    date_issued datetime DEFAULT current_timestamp() NOT NULL,
     notes TEXT,
     PRIMARY KEY (billID, bill_number),
     FOREIGN KEY (orderID) REFERENCES Orders(orderID)
 );
 
 CREATE TABLE Payment (
-    paymentID BIGINT PRIMARY KEY,
+    paymentID BIGINT AUTO_INCREMENT PRIMARY KEY,
     billID BIGINT,
     bill_number INT,
     price NUMERIC(8,2) NOT NULL,
     card_number char(16) NOT NULL,
     status ENUM('awaiting payment', 'paid'),
+    date_paid datetime DEFAULT current_timestamp() NOT NULL,
     FOREIGN KEY (billID, bill_number) REFERENCES Bill(billID, bill_number)
 );
 

@@ -17,7 +17,7 @@ const {
 } = require("./requestController");
 const { signin } = require("./signinController");
 const { signup } = require("./signupController");
-const { getFrequentClients, getUncommittedClients } = require('./dashboardController');
+const { getFrequentClients, getUncommittedClients, getAcceptedQuotes, getProspectiveClients, getLargestClients, getBadClients, getGoodClients } = require('./dashboardController');
 
 const app = express();
 const session = require("./session");
@@ -46,6 +46,11 @@ app.get("/requests/:id", getRequestById);
 app.get("/requests/:id/image/:n", getRequestImage);
 app.get("/frequentClients", getFrequentClients);
 app.get("/uncommittedClients", getUncommittedClients);
+app.get("/acceptedQuotes", getAcceptedQuotes);
+app.get("/prospectiveClients", getProspectiveClients);
+app.get("/largestClients", getLargestClients);
+app.get("/badClients", getBadClients);
+app.get("/goodClients", getGoodClients);
 
 app.listen(5050, () => {
   console.log("I am listening on the fixed port 5050.");
