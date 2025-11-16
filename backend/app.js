@@ -18,23 +18,33 @@ const {
 } = require("./requestController");
 const { signin } = require("./signinController");
 const { signup } = require("./signupController");
-const { getFrequentClients } = require("./dashboardController");
 const {
   sendQuote,
-  listQuotes,
+  adminListQuotes,
   getQuoteById,
   negotiateQuote,
   getQuoteHistory,
   cancelQuote,
   acceptQuote,
+  listQuotes,
+  submitQuote,
 } = require("./quoteController");
 
 const { listOrders, getOrderById } = require("./orderController");
-const { getFrequentClients, getUncommittedClients, getAcceptedQuotes, getProspectiveClients, getLargestClients, getBadClients, getGoodClients, getOverdueBills } = require('./dashboardController');
+const {
+  getFrequentClients,
+  getUncommittedClients,
+  getAcceptedQuotes,
+  getProspectiveClients,
+  getLargestClients,
+  getBadClients,
+  getGoodClients,
+  getOverdueBills,
+} = require("./dashboardController");
 
 const app = express();
 const session = require("./session");
-const { listQuotes, submitQuote } = require("./quoteController");
+//const { listQuotes, submitQuote } = require("./quoteController");
 
 app.use(
   cors({
@@ -64,7 +74,7 @@ app.patch("/requests/:id/reject", rejectRequest);
 
 //quotes
 app.post("/requests/:id/quote", sendQuote);
-app.get("/quotes", listQuotes);
+app.get("/quotes", adminListQuotes);
 app.get("/quotes/:id", getQuoteById);
 app.post("/quotes/:id/negotiate", negotiateQuote);
 app.get("/quotes/:id/history", getQuoteHistory);

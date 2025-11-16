@@ -93,7 +93,7 @@ async function sendQuote(req, res) {
 }
 
 //gets a list of the quotes
-async function listQuotes(req, res) {
+async function adminListQuotes(req, res) {
   const sql = `
   SELECT 
   q.quoteID,
@@ -414,46 +414,49 @@ async function listQuotes(req, res) {
   connection.query(sql, [], (err, rows) => {
     if (err)
       return res.status(500).json({ success: false, error: err.message });
-    if (!rows.length)
-      return res.json({ success: true, empty: true });
+    if (!rows.length) return res.json({ success: true, empty: true });
     res.json(rows);
   });
 }
 
 async function submitQuote(req, res) {
-    const userData = req.body;
+  const userData = req.body;
 
-    const sql = `
+  const sql = `
         INSERT INTO Quote (quoteID, requestID, response_number, status, price, date, notes, client_id) 
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
-    connection.query(sql, [
-        userData.quoteID,
-        userData.requestID,
-        userData.response_number,
-        userData.status,
-        userData.budget,
-        userData.date,
-        userData.notes,
-        req.session.clientId
-    ], (err, result) => {
-    if (err) {
+  connection.query(
+    sql,
+    [
+      userData.quoteID,
+      userData.requestID,
+      userData.response_number,
+      userData.status,
+      userData.budget,
+      userData.date,
+      userData.notes,
+      req.session.clientId,
+    ],
+    (err, result) => {
+      if (err) {
         console.log(err);
         return res.json({ success: false, error: err.message });
+      }
+      res.json({ success: true });
     }
-    res.json({ success: true });
-  });
+  );
 }
 
 module.exports = {
   sendQuote,
-  listQuotes,
+  adminListQuotes,
   getQuoteById,
   negotiateQuote,
   getQuoteHistory,
   cancelQuote,
   acceptQuote,
   listQuotes,
-  submitQuote
+  submitQuote,
 };
