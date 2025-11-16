@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Requests</title>
+    <link rel="stylesheet" href="adminHomeStyle.css" />
+  </head>
+  <body>
+    <main>
+      
+    <main class="layout">
+      <aside class="pane left">
+        <h2>Quotes</h2>
+        <ul id="quoteItems" class="list"></ul>
+      </aside>
+
+      <section class="pane right" id="detail">
+        <h2 id="d-name">Select a request</h2>
+        <p><strong>Address:</strong> <span id="d-address">—</span></p>
+        <p><strong>Rooms:</strong> <span id="d-rooms">—</span></p>
+        <p><strong>Cleaning Type:</strong> <span id="d-cleaning">—</span></p>
+        <p><strong>Date:</strong> <input id="d-date" type="datetime-local"></p>
+        <p><strong>Budget:</strong> <input id="d-budget" type="number"></p>
+        <p><strong>Notes:</strong> <textarea id="d-notes"></textarea></p>
+        <div><strong>Photos:</strong></div>
+        <div id="d-images"></div>
+
+        <button id="editBtn">Submit Edits</button>
+        <button id="rejectBtn">Reject</button>
+        <button id="approveBtn">Approve</button>
+      </section>
+    </main>
+
+    <script src="clientQuotes.js" defer></script>
+  </body>
+</html>
