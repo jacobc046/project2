@@ -7,20 +7,18 @@
     <link rel="stylesheet" href="adminHomeStyle.css" />
   </head>
   <body>
-    <main>
-      <header class="navbar">
-        <div class="logo">Anna Johnson Dashboard</div>
-        <nav class="nav-links">
-          <a href="adminHome.html" class="active">Requests</a>
-          <a href="./dashboard.html">Dashboard</a>
-          <a>Orders</a>
-          <a>Billing</a>
-        </nav>
-        <div class="logout-section">
-          <a href="signin.html" class="logout-btn">Logout</a>
-        </div>
-      </header>
-      
+    <header class="navbar">
+      <div class="logo">Anna Johnson Dashboard</div>
+      <nav class="nav-links">
+        <a href="adminHome.html" class="active">Requests</a>
+        <a href="adminQuote.html">Quotes</a>
+        <a href="adminOrder.html">Orders</a>
+      </nav>
+      <div class="logout-section">
+        <a href="signin.html" class="logout-btn">Logout</a>
+      </div>
+    </header>
+
     <main class="layout">
       <aside class="pane left">
         <h2>Requests</h2>
@@ -28,18 +26,58 @@
       </aside>
 
       <section class="pane right" id="detail">
-        <h2 id="d-name">Select a request</h2>
-        <p><strong>Address:</strong> <span id="d-address">—</span></p>
-        <p><strong>Rooms:</strong> <span id="d-rooms">—</span></p>
-        <p><strong>Date:</strong> <span id="d-date">—</span></p>
-        <p><strong>Budget:</strong> $<span id="d-budget">—</span></p>
-        <p><strong>Cleaning Type:</strong> <span id="d-cleaning">—</span></p>
-        <p><strong>Notes:</strong> <span id="d-notes">—</span></p>
-        <div><strong>Photos:</strong></div>
-        <div id="d-images"></div>
+        <div class="section-box">
+          <h2 id="d-name">Select a request</h2>
+          <p><strong>Status:</strong> <span id="d-status">-</span></p>
+          <p><strong>Address:</strong> <span id="d-address">-</span></p>
+          <p><strong>Rooms:</strong> <span id="d-rooms">-</span></p>
+          <p><strong>Date:</strong> <span id="d-date">-</span></p>
+          <p><strong>Budget:</strong> $<span id="d-budget">-</span></p>
+          <p><strong>Cleaning Type:</strong> <span id="d-cleaning">-</span></p>
+          <p><strong>Notes:</strong> <span id="d-notes">-</span></p>
+          <div><strong>Photos:</strong></div>
+          <div id="d-images"></div>
+        </div>
 
-        <button id="sendQuoteBtn">Send Quote</button>
-        <button id="rejectBtn">Reject Request</button>
+        <div class="section-box">
+          <h3>Reject Request</h3>
+          <textarea
+            id="reject-note"
+            rows="3"
+            placeholder="Note for reject"
+          ></textarea>
+          <br />
+          <br />
+          <button id="rejectBtn">Reject Request</button>
+        </div>
+
+        <div class="section-box">
+          <h3>Send Quote</h3>
+          <label>Adjusted Price (optional)</label>
+          <input
+            id="q-price"
+            type="number"
+            step="0.01"
+            placeholder="Leave empty to use original budget"
+          />
+          <br />
+          <br />
+          <label>Scheduled Time (optional)</label>
+          <br />
+          <input id="q-datetime" type="datetime-local" />
+          <br />
+          <br />
+
+          <label>Note (optional)</label>
+          <textarea
+            id="q-note"
+            rows="3"
+            placeholder="Any note for the client"
+          ></textarea>
+          <br />
+          <br />
+          <button id="sendQuoteBtn">Send Quote</button>
+        </div>
       </section>
     </main>
 

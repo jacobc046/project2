@@ -219,6 +219,68 @@ button.outline {
 .empty {
   color: var(--muted);
 }
+.reject-box {
+  margin-top: 45px;
+}
+#reject-note {
+  width: 100%;
+  padding: 8px;
+  border-radius: 8px;
+}
+#rejectBtn [disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+  margin-bottom: 10px;
+}
+.section-box {
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 20px 25px;
+  margin-bottom: 25px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+}
+
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.list li {
+  margin-bottom: 10px;
+}
+
+.list .row {
+  width: 100%;
+  text-align: left;
+  padding: 12px 16px;
+  background: #f7f8fa;
+  border: 1px solid #d3d7de;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  color: #1a1d2d;
+  cursor: pointer;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  transition: all 0.15s ease-in-out;
+}
+
+.list .row:hover {
+  background: #e9edf3;
+  transform: translateX(3px);
+}
+
+.list .row.selected {
+  background: #d2e8ff;
+  border-color: #81b7ff;
+}
+
+.list .row span {
+  font-weight: 600;
 
 #d-images img {
   width: 20%;

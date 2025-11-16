@@ -40,13 +40,13 @@ async function cleaningRequest(req, res) {
 }
 
 //gets the list of request for admin side
-function listRequests(req, res) {
+async function listRequests(req, res) {
   const sql = `
     SELECT r.requestID,
            CONCAT(u.first_name, ' ', u.last_name) AS client_name
     FROM Requests r
     JOIN Users u ON u.client_id = r.client_id
-    ORDER BY r.date DESC
+    ORDER BY r.requestID ASC
   `;
   connection.query(sql, (err, rows) => {
     if (err)
@@ -56,7 +56,7 @@ function listRequests(req, res) {
 }
 
 //get the requests information by id for admin side
-function getRequestById(req, res) {
+async function getRequestById(req, res) {
   const sql = `
     SELECT r.requestID,
            CONCAT(u.first_name, ' ', u.last_name) AS client_name,
@@ -65,7 +65,8 @@ function getRequestById(req, res) {
            r.date,
            r.budget,
            r.cleaning_type,
-           r.notes
+           r.notes,
+           r.status
     FROM Requests r
     JOIN Users u ON u.client_id = r.client_id
     WHERE r.requestID = ?
@@ -81,7 +82,7 @@ function getRequestById(req, res) {
 }
 
 //image information for admin side
-function getRequestImage(req, res) {
+async function getRequestImage(req, res) {
   const n = parseInt(req.params.n, 10);
   if (isNaN(n) || n < 1) {
     return res
@@ -105,9 +106,34 @@ function getRequestImage(req, res) {
   });
 }
 
+//rejected request, admin side
+async function rejectRequest(req, res) {
+  const id = req.params.id;
+  const note = req.body && req.body.note ? req.body.note : null;
+
+  const sql = `
+    UPDATE Requests
+      SET status = 'rejected',
+          rejected_note = ?
+      WHERE requestID = ? 
+      LIMIT 1
+  `;
+  connection.query(sql, [note, id], (err, result) => {
+    if (err)
+      return res.status(500).json({ success: false, error: err.message });
+    if (result.affectedRows === 0) {
+      return res
+        .status(404)
+        .json({ success: false, error: "Request not found" });
+    }
+    return res.json({ success: true });
+  });
+}
+
 module.exports = {
   cleaningRequest,
   listRequests,
   getRequestById,
   getRequestImage,
+  rejectRequest,
 };

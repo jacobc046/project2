@@ -7,16 +7,24 @@ CREATE TABLE Requests (
     cleaning_type ENUM('basic', 'deep-clean', 'move-out') NOT NULL,
     notes TEXT,
     client_id INT NOT NULL, 
-    FOREIGN KEY (client_id) REFERENCES Users(client_id)
+    image1 LONGBLOB NULL, 
+    image2 LONGBLOB NULL,
+    image3 LONGBLOB NULL,
+    image4 LONGBLOB NULL,
+    image5 LONGBLOB NULL,
+    status ENUM('new', 'quoted', 'rejected') NOT NULL DEFAULT 'new',
+    rejected_note TEXT NULL,
+     FOREIGN KEY (client_id) REFERENCES Users(client_id)
 );
 
 CREATE TABLE Quote ( 
-    quoteID BIGINT, 
+    quoteID BIGINT AUTO_INCREMENT NOT NULL, 
     requestID BIGINT NOT NULL,
     response_number INT,
-    status ENUM('awaiting client', 'awaiting admin') NOT NULL, 
+    status ENUM('awaiting client', 'awaiting admin', 'accepted', 'canceled') NOT NULL, 
     price NUMERIC(10,2) NOT NULL, date DATETIME NOT NULL, 
-    notes TEXT, PRIMARY KEY (quoteID, response_number), 
+    notes TEXT, 
+    PRIMARY KEY (quoteID, response_number), 
     FOREIGN KEY (requestID) REFERENCES Requests(requestID) 
 );
 
@@ -33,7 +41,7 @@ CREATE TABLE Orders (
     );
 
 CREATE TABLE Bill (
-    billID BIGINT AUTO_INCREMENT,
+    billID BIGINT AUTO_INCREMENT NOT NULL,
     bill_number INT,
     orderID BIGINT,
     price NUMERIC(8,2) NOT NULL,

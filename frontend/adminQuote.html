@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quotes</title>
+    <link rel="stylesheet" href="adminHomeStyle.css" />
+  </head>
+  <body>
+    <header class="navbar">
+      <div class="logo">Anna Johnson Dashboard</div>
+      <nav class="nav-links">
+        <a href="adminHome.html">Requests</a>
+        <a href="adminQuote.html" class="active">Quotes</a>
+        <a href="adminOrder.html">Orders</a>
+        <!-- <a>Billing</a> -->
+      </nav>
+      <div class="logout-section">
+        <a href="signin.html" class="logout-btn">Logout</a>
+      </div>
+    </header>
+
+    <main class="layout">
+      <aside class="pane left">
+        <h2>Quotes</h2>
+        <ul id="quoteItems" class="list"></ul>
+        <!-- <div id="quoteEmpty" style="display: none; color: #666">
+          No quotes yet.
+        </div> -->
+      </aside>
+
+      <section class="pane right" id="q-detail">
+        <div class="section-box">
+          <h2 id="q-client">Select a quote</h2>
+          <h5>Most recent quote</h5>
+          <p><strong>Address:</strong> <span id="q-address">-</span></p>
+          <p><strong>Quote Status:</strong> <span id="q-status">-</span></p>
+          <p><strong>Quote Price:</strong> $<span id="q-price">-</span></p>
+          <p><strong>Quote Date:</strong> <span id="q-date">-</span></p>
+          <p><strong>Quote Notes:</strong> <span id="q-notes">-</span></p>
+        </div>
+
+        <div class="section-box">
+          <div class="quote-box">
+            <h3>Negotiation</h3>
+            <label>Negotiated Price (optional)</label>
+            <input
+              id="neg-price"
+              type="number"
+              step="0.01"
+              placeholder="Leave empty to use budget"
+            />
+
+            <br />
+            <br />
+            <label>Negotiated Time (optional)</label>
+            <br />
+            <input id="neg-datetime" type="datetime-local" />
+            <br />
+            <br />
+
+            <label>Note (optional)</label>
+            <textarea
+              id="neg-note"
+              rows="3"
+              placeholder="Any note for the client"
+            ></textarea>
+            <br />
+            <br />
+            <button id="btn-negotiate">Send Negotiation</button>
+          </div>
+          <br />
+          <button id="btn-accept">Accept Quote</button>
+          <button id="btn-cancel">Cancel Quote</button>
+        </div>
+
+        <div class="section-box">
+          <h2>Quote History</h2>
+          <ul id="q-history"></ul>
+        </div>
+      </section>
+    </main>
+
+    <script src="adminQuote.js" defer></script>
+  </body>
+</html>
