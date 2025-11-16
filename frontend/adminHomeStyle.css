@@ -219,3 +219,7 @@ button.outline {
 .empty {
   color: var(--muted);
 }
+
+#d-images img {
+  width: 20%;
+}

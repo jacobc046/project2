@@ -17,10 +17,11 @@ const {
 } = require("./requestController");
 const { signin } = require("./signinController");
 const { signup } = require("./signupController");
-const { getFrequentClients, getUncommittedClients, getAcceptedQuotes, getProspectiveClients, getLargestClients, getBadClients, getGoodClients } = require('./dashboardController');
+const { getFrequentClients, getUncommittedClients, getAcceptedQuotes, getProspectiveClients, getLargestClients, getBadClients, getGoodClients, getOverdueBills } = require('./dashboardController');
 
 const app = express();
 const session = require("./session");
+const { listQuotes, submitQuote } = require("./quoteController");
 
 app.use(
   cors({
@@ -51,6 +52,9 @@ app.get("/prospectiveClients", getProspectiveClients);
 app.get("/largestClients", getLargestClients);
 app.get("/badClients", getBadClients);
 app.get("/goodClients", getGoodClients);
+app.get("/overdueBills", getOverdueBills);
+app.get("/listQuotes", listQuotes);
+app.post("/submitQuote", submitQuote);
 
 app.listen(5050, () => {
   console.log("I am listening on the fixed port 5050.");
