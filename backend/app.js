@@ -30,9 +30,11 @@ const {
 } = require("./quoteController");
 
 const { listOrders, getOrderById } = require("./orderController");
+const { getFrequentClients, getUncommittedClients, getAcceptedQuotes, getProspectiveClients, getLargestClients, getBadClients, getGoodClients, getOverdueBills } = require('./dashboardController');
 
 const app = express();
 const session = require("./session");
+const { listQuotes, submitQuote } = require("./quoteController");
 
 app.use(
   cors({
@@ -74,6 +76,15 @@ app.get("/orders", listOrders);
 app.get("/orders/:id", getOrderById);
 
 app.get("/frequentClients", getFrequentClients);
+app.get("/uncommittedClients", getUncommittedClients);
+app.get("/acceptedQuotes", getAcceptedQuotes);
+app.get("/prospectiveClients", getProspectiveClients);
+app.get("/largestClients", getLargestClients);
+app.get("/badClients", getBadClients);
+app.get("/goodClients", getGoodClients);
+app.get("/overdueBills", getOverdueBills);
+app.get("/listQuotes", listQuotes);
+app.post("/submitQuote", submitQuote);
 
 app.listen(5050, () => {
   console.log("I am listening on the fixed port 5050.");
