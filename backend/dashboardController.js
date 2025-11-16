@@ -146,7 +146,7 @@ async function getBadClients(req, res) {
 async function getGoodClients(req, res) {
   const query = `
   SELECT DISTINCT u.first_name, u.last_name, u.client_id, u.email, b.billID, b.date_issued, p.billID, p.date_paid, p.status
-  FROM Users u, Bills b, Payment p
+  FROM Users u, Bill b, Payment p
   WHERE b.client_id = u.client_id
   AND p.billID = b.billID
   AND p.status = 'paid'
