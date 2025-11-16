@@ -142,7 +142,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   const rejectBtn = document.getElementById("rejectBtn");
-  approveBtn.addEventListener("click", async (e) => {
+  rejectBtn.addEventListener("click", async (e) => {
       const data = rows.filter(row => row.quoteID == localStorage.getItem("quoteID"))[0];
   
       const res = await fetch(`${API}/submitQuote`, {
