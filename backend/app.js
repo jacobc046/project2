@@ -14,10 +14,22 @@ const {
   listRequests,
   getRequestById,
   getRequestImage,
+  rejectRequest,
 } = require("./requestController");
 const { signin } = require("./signinController");
 const { signup } = require("./signupController");
 const { getFrequentClients } = require("./dashboardController");
+const {
+  sendQuote,
+  listQuotes,
+  getQuoteById,
+  negotiateQuote,
+  getQuoteHistory,
+  cancelQuote,
+  acceptQuote,
+} = require("./quoteController");
+
+const { listOrders, getOrderById } = require("./orderController");
 
 const app = express();
 const session = require("./session");
@@ -40,10 +52,27 @@ console.log("DB PORT: " + process.env.DB_PORT);
 
 app.post("/signin", signin);
 app.post("/signup", signup);
+
+//requests
 app.post("/request", upload.array("images", 5), cleaningRequest);
 app.get("/requests", listRequests);
 app.get("/requests/:id", getRequestById);
 app.get("/requests/:id/image/:n", getRequestImage);
+app.patch("/requests/:id/reject", rejectRequest);
+
+//quotes
+app.post("/requests/:id/quote", sendQuote);
+app.get("/quotes", listQuotes);
+app.get("/quotes/:id", getQuoteById);
+app.post("/quotes/:id/negotiate", negotiateQuote);
+app.get("/quotes/:id/history", getQuoteHistory);
+app.post("/quotes/:id/cancel", cancelQuote);
+app.post("/quotes/:id/accept", acceptQuote);
+
+//orders
+app.get("/orders", listOrders);
+app.get("/orders/:id", getOrderById);
+
 app.get("/frequentClients", getFrequentClients);
 
 app.listen(5050, () => {

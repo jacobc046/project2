@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quotes</title>
+    <link rel="stylesheet" href="adminHomeStyle.css" />
+  </head>
+  <body>
+    <header class="navbar">
+      <div class="logo">Anna Johnson Dashboard</div>
+      <nav class="nav-links">
+        <a href="adminHome.html">Requests</a>
+        <a href="adminQuote.html">Quotes</a>
+        <a href="adminOrder.html" class="active">Orders</a>
+        <!-- <a>Billing</a> -->
+      </nav>
+      <div class="logout-section">
+        <a href="signin.html" class="logout-btn">Logout</a>
+      </div>
+    </header>
+
+    <main class="layout">
+      <aside class="pane left">
+        <h2>Orders</h2>
+        <ul class="list" id="orderItems"></ul>
+        <!-- <div id="quoteEmpty" style="display: none; color: #666">
+          No quotes yet.
+        </div> -->
+      </aside>
+
+      <section class="pane right" id="o-detail">
+        <div class="section-box">
+          <h2 id="o-client">Select an order</h2>
+          <p><strong>Address:</strong> <span id="o-address">-</span></p>
+          <p><strong>Number of Rooms:</strong> <span id="o-rooms">-</span></p>
+          <p><strong>Price:</strong> $<span id="o-price">-</span></p>
+          <p><strong>Date:</strong> <span id="o-date">-</span></p>
+          <p><strong>Notes:</strong> <span id="o-notes">-</span></p>
+          <button>Generate Bill</button>
+        </div>
+      </section>
+    </main>
+
+    <script src="adminOrder.js" defer></script>
+  </body>
+</html>
