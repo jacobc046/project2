@@ -8,6 +8,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const oPrice = document.getElementById("o-price");
   const oDate = document.getElementById("o-date");
   const oNotes = document.getElementById("o-notes");
+  const imageContainer = document.getElementById("o-images");
 
   //which order is currently selected
   let currentOrderID = null;
@@ -101,6 +102,23 @@ document.addEventListener("DOMContentLoaded", async () => {
       oPrice.textContent = formatMoney(o.price);
       oDate.textContent = formatDate(o.date);
       oNotes.textContent = o.notes || "–";
+      console.log(o);
+
+      //gets the images
+      imageContainer.innerHTML = "";
+
+      //loops through the images and loads the valid ones
+      for (let i = 1; i <= 5; i++) {
+        const buf = o[`image${i}`];
+        if (!buf || !buf.data) continue; // if null or empty, skip
+
+        const blob = new Blob([new Uint8Array(buf.data)], { type: "image/png" }); // or "image/png"
+        const img = document.createElement("img");
+        img.src = URL.createObjectURL(blob);
+        img.alt = `Image ${i}`;
+        img.onerror = () => img.remove();
+        imageContainer.appendChild(img);
+      }
 
       currentOrderID = o.orderID;
     } catch (err) {
