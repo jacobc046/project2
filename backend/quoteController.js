@@ -24,7 +24,7 @@ async function sendQuote(req, res) {
 
   //looks up the request to know status and budget
   const getReqSql =
-    "SELECT budget, status FROM Requests WHERE requestID = ? LIMIT 1";
+    "SELECT budget, status, client_id FROM Requests WHERE requestID = ? LIMIT 1";
   connection.query(getReqSql, [requestID], (err, reqRows) => {
     if (err)
       return res.status(500).json({ success: false, error: err.message });
@@ -36,6 +36,7 @@ async function sendQuote(req, res) {
 
     //if admin doesnt update a price, use the price from the request
     const budget = Number(reqRows[0].budget);
+    const clientId = reqRows[0].client_id;
     const finalPrice =
       priceInput == null || priceInput === "" ? budget : Number(priceInput);
 
@@ -52,12 +53,12 @@ async function sendQuote(req, res) {
 
       //Insert the quote
       const insertSql = `
-        INSERT INTO Quote (requestID, response_number, status, price, date, notes)
-        VALUES (?, ?, 'awaiting client', ?, ?, ?)
+        INSERT INTO Quote (requestID, response_number, status, price, date, notes, client_id)
+        VALUES (?, ?, 'awaiting client', ?, ?, ?, ?)
       `;
       connection.query(
         insertSql,
-        [requestID, response_number, finalPrice, quoteDate, note],
+        [requestID, response_number, finalPrice, quoteDate, note, clientId],
         (err3, result) => {
           if (err3) {
             return res
@@ -195,8 +196,8 @@ async function negotiateQuote(req, res) {
         return res.status(500).json({ success: false, error: err2.message });
 
       const newQuote = `
-        INSERT INTO Quote (quoteID, requestID, response_number, status, price, date, notes)
-        SELECT ?, requestID, ?, 'awaiting client', ?, ?, ?
+        INSERT INTO Quote (quoteID, requestID, response_number, status, price, date, notes, client_id)
+        SELECT ?, requestID, ?, 'awaiting client', ?, ?, ?, client_id
         FROM Quote WHERE quoteID = ? LIMIT 1
       `;
       connection.query(

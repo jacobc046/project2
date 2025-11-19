@@ -21,11 +21,14 @@ CREATE TABLE Quote (
     quoteID BIGINT AUTO_INCREMENT NOT NULL, 
     requestID BIGINT NOT NULL,
     response_number INT,
+    client_id INT NOT NULL, 
     status ENUM('awaiting client', 'awaiting admin', 'accepted', 'canceled') NOT NULL, 
     price NUMERIC(10,2) NOT NULL, date DATETIME NOT NULL, 
     notes TEXT, 
     PRIMARY KEY (quoteID, response_number), 
     FOREIGN KEY (requestID) REFERENCES Requests(requestID) 
+    FOREIGN KEY (client_id) REFERENCES Users(client_id)
+
 );
 
 CREATE TABLE Orders (
@@ -45,7 +48,7 @@ CREATE TABLE Bill (
     bill_number INT,
     orderID BIGINT,
     price NUMERIC(8,2) NOT NULL,
-    status ENUM('awaiting client', 'awaiting admin') NOT NULL,
+    status ENUM('awaiting client', 'awaiting admin', 'paid') NOT NULL,
     date_issued datetime DEFAULT current_timestamp() NOT NULL,
     notes TEXT,
     PRIMARY KEY (billID, bill_number),
