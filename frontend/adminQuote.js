@@ -108,6 +108,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       //sets current quote id as selected quote and loads history for that quote
       currentQuoteID = q.quoteID;
+
       await loadHistory(id);
     } catch (err) {
       console.error("Quote detail load failed:", err);

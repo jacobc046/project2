@@ -75,14 +75,37 @@ document.addEventListener("DOMContentLoaded", async () => {
         imageContainer.appendChild(img);
       }
 
-      if (r.status && r.status.toLowerCase() === "rejected") {
+      const status = (r.status || "").toLowerCase();
+      document.getElementById("d-status").textContent = status
+        ? status.toUpperCase()
+        : "-";
+
+      // 1) default: enable both buttons
+      rejectBtn.disabled = false;
+      rejectBtn.style.opacity = "1";
+      rejectBtn.textContent = "Reject Request";
+
+      sendQuoteBtn.disabled = false;
+      sendQuoteBtn.style.opacity = "1";
+      sendQuoteBtn.textContent = "Send Quote";
+
+      // 2) override based on status
+      if (status === "rejected") {
         rejectBtn.disabled = true;
         rejectBtn.style.opacity = "0.6";
         rejectBtn.textContent = "Already Rejected";
-      } else {
-        rejectBtn.disabled = false;
-        rejectBtn.style.opacity = "1";
-        rejectBtn.textContent = "Reject Request";
+
+        sendQuoteBtn.disabled = true;
+        sendQuoteBtn.style.opacity = "0.6";
+        sendQuoteBtn.textContent = "Cannot send quote";
+      } else if (status === "quoted") {
+        sendQuoteBtn.disabled = true;
+        sendQuoteBtn.style.opacity = "0.6";
+        sendQuoteBtn.textContent = "Quote Already Sent";
+
+        rejectBtn.disabled = true;
+        rejectBtn.style.opacity = "0.6";
+        rejectBtn.textContent = "Already Quoted";
       }
     } catch (err) {
       console.error("Failed to load details/images:", err);
