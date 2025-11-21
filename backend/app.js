@@ -108,6 +108,7 @@ app.post("/orders/:id/bill", createBill);
 app.get("/orders/:id/bill", getLastestBill);
 app.post("/orders/:id/bill", createBill);
 app.post("/orders/:id/bill/revise", reviseBill);
+app.get("/orders/:id/bill/history", getBillHistory);
 
 app.listen(5050, () => {
   console.log("I am listening on the fixed port 5050.");

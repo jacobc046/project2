@@ -241,6 +241,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
 
       renderBill(data.bill);
+      await loadBillHistory(currentOrderID);
+
       alert(`Bill #${data.bill.bill_number} created for this order.`);
     } catch (err) {
       console.error("Generate bill error:", err);
@@ -258,7 +260,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       .map(
         (b) => `
         <li>
-          <strong>Version ${b.bill_number}</strong> – 
+          <strong>Bill # ${b.bill_number}</strong> – 
           $${formatMoney(b.price)} – 
           ${b.status} – 
           ${formatDate(b.date_issued)}<br/>
