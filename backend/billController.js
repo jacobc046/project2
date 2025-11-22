@@ -135,7 +135,7 @@ async function reviseBill(req, res) {
 
   // Get latest bill_number for this order
   const getLatestSql = `
-      SELECT bill_number
+      SELECT bill_number, status, billID
       FROM Bill
       WHERE orderID = ?
       ORDER BY bill_number DESC
@@ -150,18 +150,20 @@ async function reviseBill(req, res) {
       return res
         .status(404)
         .json({ success: false, error: "No bill exists for this order yet" });
-    }
+    }    
 
     const nextNo = rows[0].bill_number + 1;
+    const billID = rows[0].billID;
+    const status = rows[0].status == 'awaiting client' ? 'awaiting admin' : 'awaiting client';
 
     const insertSql = `
-        INSERT INTO Bill (bill_number, orderID, price, status, date_issued, notes)
-        VALUES (?, ?, ?, 'awaiting client', NOW(), ?)
+        INSERT INTO Bill (billID, bill_number, orderID, price, status, date_issued, notes)
+        VALUES (?, ?, ?, ?, ?, NOW(), ?)
       `;
 
     connection.query(
       insertSql,
-      [nextNo, orderID, Number(price), notes ?? null],
+      [billID, nextNo, orderID, Number(price), status, notes ?? null],
       (err2, result) => {
         if (err2) {
           return res.status(500).json({ success: false, error: err2.message });

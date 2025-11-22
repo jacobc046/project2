@@ -51,6 +51,7 @@ const {
 
 const app = express();
 const session = require("./session");
+const { listUnpaidBills } = require("./paymentController");
 //const { listQuotes, submitQuote } = require("./quoteController");
 
 app.use(
@@ -110,6 +111,9 @@ app.get("/orders/:id/bill", getLastestBill);
 app.post("/orders/:id/bill", createBill);
 app.post("/orders/:id/bill/revise", reviseBill);
 app.get("/orders/:id/bill/history", getBillHistory);
+
+//payment
+app.get("/listUnpaidBills", listUnpaidBills);
 
 app.listen(5050, () => {
   console.log("I am listening on the fixed port 5050.");
