@@ -1,8 +1,12 @@
+import { formatDate } from "../ultils/formatDate";
+import { formatMoney } from "../ultils/formatMoney";
+
 let rows = [];
 
 document.addEventListener("DOMContentLoaded", async () => {
   const API = "http://localhost:5050";
   const list = document.getElementById("quoteItems");
+  const qHistory = document.getElementById("q-history");
 
   //gets the request from the backend and stores it in a json format, goes through each row to get the client name and id
   try {
@@ -34,6 +38,41 @@ document.addEventListener("DOMContentLoaded", async () => {
   } catch (e) {
     console.error(e);
     list.innerHTML = `<li>Failed to load quotes</li>`;
+  }
+
+  //Loading quote history
+  async function loadHistory(id) {
+    const res = await fetch(`${API}/quotes/${id}/history`, {
+      credentials: "include",
+    });
+    const data = await res.json();
+
+    //if failure
+    if (!data.success || !Array.isArray(data.history)) {
+      qHistory.innerHTML = "<li>No history available.</li>";
+      return;
+    }
+
+    //if no quote history
+    if (data.history.length === 0) {
+      qHistory.innerHTML = "<li>No previous negotiations.</li>";
+      return;
+    }
+
+    //builds the quote history html
+    qHistory.innerHTML = data.history
+      .map(
+        (h) => `
+          <li>
+            <strong>Quote${h.response_number}</strong> <br />
+            $${formatMoney(h.price)} —
+            ${formatDate(h.date)} <br/>
+            ${h.quote_status} <br/>
+            ${h.notes || "No notes"} <br />
+          </li>
+        `
+      )
+      .join("");
   }
 
   //handles the click on the clients name on the request
@@ -79,6 +118,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         img.onerror = () => img.remove();
         imageContainer.appendChild(img);
       }
+
+      loadHistory(btn.dataset.id)
     } catch (err) {
       console.error("Failed to load details/images:", err);
       document.getElementById("d-name").textContent = "Error loading details";
