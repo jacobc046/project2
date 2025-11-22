@@ -1,3 +1,6 @@
+import { formatMoney } from "../ultils/formatMoney";
+import { formatDate } from "../ultils/formatDate";
+
 document.addEventListener("DOMContentLoaded", async () => {
   const API = "http://localhost:5050";
   const list = document.getElementById("quoteItems");
@@ -20,29 +23,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   //which quote is currently selected
   let currentQuoteID = null;
-
-  const formatMoney = (n) => {
-    const v = Number(n);
-    if (!Number.isFinite(v)) return "-";
-    return v
-      .toLocaleString("en-US", { style: "currency", currency: "USD" })
-      .replace("$", "");
-  };
-
-  //convert into JS date
-  const formatDate = (d) => {
-    const dt = new Date(d);
-    return Number.isNaN(dt.getTime())
-      ? "-"
-      : dt.toLocaleString("en-US", {
-          month: "short",
-          day: "numeric",
-          year: "numeric",
-          hour: "numeric",
-          minute: "2-digit",
-          hour12: true,
-        });
-  };
 
   //load list of quotes
   async function loadList() {

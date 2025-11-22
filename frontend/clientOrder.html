@@ -25,9 +25,42 @@
         <p><strong>Notes:</strong> <span id="d-notes">-</span></p>
         <div><strong>Photos:</strong></div>
         <div id="d-images"></div>
+
+        <div class="section-box">
+          <h2>Billing Information</h2>
+          <h5>Most recent bill:</h5>
+          <p><strong>Bill #:</strong> <span id="b-number">-</span></p>
+          <p><strong>Status:</strong> <span id="b-status">-</span></p>
+          <p>
+            <strong>Amount:</strong>
+            $<span id="b-amount">-</span>
+          </p>
+          <p><strong>Date Issued:</strong> <span id="b-date">-</span></p>
+          <p><strong>Notes:</strong> <span id="b-notes">-</span></p>
+        </div>
+
+        <div class="section-box">
+          <h2>Revise Bill</h2>
+
+          <label>
+            New Amount:
+            <input type="number" id="revise-amount" step="0.01" />
+          </label>
+          <br />
+          <label>
+            Revision Notes:
+            <textarea id="revise-notes" rows="3"></textarea>
+          </label>
+          <br />
+          <button id="revise-bill">Revise</button>
+        </div>
+        <div class="section-box">
+          <h2>Bill History</h2>
+          <ul id="bill-history"></ul>
+        </div>
       </section>
     </main>
 
-    <script src="clientOrder.js" defer></script>
+    <script type="module" src="clientOrder.js" defer></script>
   </body>
 </html>
