@@ -6,6 +6,7 @@ async function listOrders(req, res) {
     FROM Orders o JOIN Quote q on q.quoteID = o.quoteID AND q.response_number = o.response_number
     JOIN Requests r ON r.requestID = q.requestID
     JOIN Users u ON u.client_id = r.client_id 
+    WHERE u.client_id = ${req.session.clientId}
     ORDER BY o.orderID ASC 
     `;
 

@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   if (signUpBtn) {
     // make sure it exists
-    signUpBtn.onclick = function () {
+    signUpBtn.onclick = async function () {
       const firstNameInput = document.querySelector("#first-name-input");
       const lastNameInput = document.querySelector("#last-name-input");
       const passwordInput = document.querySelector("#password-input");
@@ -18,9 +18,10 @@ document.addEventListener("DOMContentLoaded", function () {
       const exDateInput = document.querySelector("#ex-date-input");
       const cvvInput = document.querySelector("#cvv-code-input");
 
-      fetch("http://localhost:5050/signup", {
+      await fetch("http://localhost:5050/signup", {
         headers: { "Content-type": "application/json" },
         method: "POST",
+        credentials: "include",
         body: JSON.stringify({
           password: passwordInput.value,
           firstName: firstNameInput.value,

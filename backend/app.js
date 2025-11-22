@@ -92,6 +92,7 @@ app.post("/quotes/:id/accept", acceptQuote);
 app.get("/orders", listOrders);
 app.get("/orders/:id", getOrderById);
 
+//dashboard
 app.get("/frequentClients", getFrequentClients);
 app.get("/uncommittedClients", getUncommittedClients);
 app.get("/acceptedQuotes", getAcceptedQuotes);
