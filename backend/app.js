@@ -49,9 +49,13 @@ const {
   reviseBill,
 } = require("./billController");
 
+const { 
+  listUnpaidBills,
+  payBill
+ } = require("./paymentController");
+
 const app = express();
 const session = require("./session");
-const { listUnpaidBills } = require("./paymentController");
 //const { listQuotes, submitQuote } = require("./quoteController");
 
 app.use(
@@ -114,6 +118,7 @@ app.get("/orders/:id/bill/history", getBillHistory);
 
 //payment
 app.get("/listUnpaidBills", listUnpaidBills);
+app.post("/payBill", payBill);
 
 app.listen(5050, () => {
   console.log("I am listening on the fixed port 5050.");
