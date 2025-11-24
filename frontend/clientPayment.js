@@ -17,9 +17,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     rows = await res.json();
     rows = rows.unpaidBills;
-    if (rows.empty) {
-      list.innerHTML = "No upaid bills to display";
-      return;
+    if (rows.length == 0) {
+        list.innerHTML = "No unpaid bills to display";
+        return;
     }
     console.log(rows);
 

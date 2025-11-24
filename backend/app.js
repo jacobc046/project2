@@ -30,7 +30,7 @@ const {
   submitQuote,
 } = require("./quoteController");
 
-const { listOrders, getOrderById } = require("./orderController");
+const { listOrders, getOrderById, listClientOrders } = require("./orderController");
 const {
   getFrequentClients,
   getUncommittedClients,
@@ -95,6 +95,7 @@ app.post("/quotes/:id/accept", acceptQuote);
 
 //orders
 app.get("/orders", listOrders);
+app.get("/clientOrders", listClientOrders);
 app.get("/orders/:id", getOrderById);
 
 //dashboard

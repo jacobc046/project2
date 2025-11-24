@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   //gets the request from the backend and stores it in a json format, goes through each row to get the client name and id
   try {
-    const res = await fetch(`${API}/orders`, {
+    const res = await fetch(`${API}/clientOrders`, {
       method: "GET",
       credentials: "include",
     });
