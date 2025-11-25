@@ -93,6 +93,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         body: JSON.stringify({
             billID: r.billID,
             bill_number: r.bill_number,
+            orderID: r.orderID,
             price: r.price,
             status: "paid",
             card_number: cardNumber,

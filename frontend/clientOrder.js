@@ -101,7 +101,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
-  function clearBillUI(message = "No bill yet. Click Generate Bill.") {
+  function clearBillUI(message = "No bill yet. Waiting on admin to generate Bill.") {
     bNumber.textContent = "-";
     bStatus.textContent = message;
     bAmount.textContent = "-";
