@@ -46,7 +46,7 @@ async function signup(req, result) {
     });
     
     req.session.clientId = clientId;
-    result.json({ success: true });
+    return result.json({ success: true });
     
   } catch (error) {
     console.error("app: signup error:", error);
