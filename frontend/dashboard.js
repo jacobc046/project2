@@ -1,3 +1,5 @@
+import { formatDate } from '../ultils/formatDate';
+
 fetch('http://localhost:5050/frequentClients')
     .then(res => res.json())
     .then(result => {
@@ -106,10 +108,10 @@ fetch('http://localhost:5050/acceptedQuotes')
                 <td>${row.email}</td>
                 <td>${row.first_name}</td>
                 <td>${row.last_name}</td>
-                <td>${row.quoteId}</td>
+                <td>${row.quoteID}</td>
                 <td>${row.price}</td>
-                <td>${row.date}</td>
-                <td>${row.notes}</td>
+                <td>${formatDate(row.date)}</td>
+                <td>${row.notes || ""}</td>
             </tr>
             `;
         });
@@ -230,7 +232,7 @@ fetch('http://localhost:5050/overdueBills')
                 <td>${row.address}</td>
                 <td>${row.number_of_rooms}</td>
                 <td>${row.price}</td>
-                <td>${row.date_issued}</td>
+                <td>${formatDate(row.date_issued)}</td>
             </tr>
             `;
         });
