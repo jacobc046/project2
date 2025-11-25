@@ -348,8 +348,8 @@ async function acceptQuote(req, res) {
       //create order
       const orderSql = `
           INSERT INTO Orders
-            (quoteID, response_number, address, number_of_rooms, date, price, notes)
-          VALUES (?, ?, ?, ?, ?, ?, ?)
+            (quoteID, response_number, address, number_of_rooms, date, price, notes, client_id)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         `;
 
       connection.query(
@@ -362,6 +362,7 @@ async function acceptQuote(req, res) {
           latest.date,
           latest.price,
           latest.notes,
+          req.session.clientId
         ],
         (err3, result) => {
           if (err3)
@@ -390,6 +391,7 @@ async function listQuotes(req, res) {
         r.number_of_rooms,
         q.date,
         q.price,
+        q.status,
         r.cleaning_type,
         q.notes,
         q.requestID,
@@ -403,7 +405,7 @@ async function listQuotes(req, res) {
     FROM Requests r, Quote q
     JOIN Users u ON u.client_id = q.client_id
     WHERE q.requestID = r.requestID
-    AND q.status = 'awaiting client'
+    AND (q.status = 'awaiting client' OR q.status = 'cancelled')
     AND q.client_id = ${req.session.clientId}
     AND q.response_number = (
         SELECT MAX(q2.response_number)
