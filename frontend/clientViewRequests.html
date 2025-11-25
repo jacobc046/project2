@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Requests</title>
+    <link rel="stylesheet" href="adminHomeStyle.css" />
+  </head>
+  <body>
+    <main>
+      
+    <main class="layout">
+      <aside class="pane left">
+        <h2>View Requests</h2>
+        <ul id="request-items" class="list"></ul>
+      </aside>
+
+      <section class="pane right" id="detail">
+        <h2 id="d-name">Select a request</h2>
+        <p><strong>REQUEST STATUS:</strong> <span id="d-status">—</span></p>
+        <p><strong>Address:</strong> <span id="d-address">—</span></p>
+        <p><strong>Rooms:</strong> <span id="d-rooms">—</span></p>
+        <p><strong>Cleaning Type:</strong> <span id="d-cleaning">—</span></p>
+        <p><strong>Date:</strong> <span id="d-date"></span>-</p>
+        <p><strong>Budget:</strong> <span id="d-budget">-</span></p>
+        <p><strong>Notes:</strong> <span id="d-notes">-</span></p>
+        <div><strong>Photos:</strong></div>
+        <div id="d-images"></div>
+      </section>
+    </main>
+
+    <script type="module" src="clientViewRequests.js" defer></script>
+  </body>
+</html>
