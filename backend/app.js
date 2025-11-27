@@ -15,6 +15,7 @@ const {
   getRequestById,
   getRequestImage,
   rejectRequest,
+  listClientRequests,
 } = require("./requestController");
 const { signin } = require("./signinController");
 const { signup } = require("./signupController");
@@ -83,6 +84,7 @@ app.get("/requests", listRequests);
 app.get("/requests/:id", getRequestById);
 app.get("/requests/:id/image/:n", getRequestImage);
 app.patch("/requests/:id/reject", rejectRequest);
+app.get("/listClientRequests", listClientRequests);
 
 //quotes
 app.post("/requests/:id/quote", sendQuote);

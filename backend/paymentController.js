@@ -2,7 +2,7 @@ const connection = require("./connection");
 
 //gets a list of the orders
 async function listUnpaidBills(req, res) {
-  const sql = `SELECT b.billID, b.bill_number, r.cleaning_type, r.image1, r.image2, r.image3, r.image4, r.image5,  o.orderID, o.address, o.number_of_rooms, o.date, b.price, b.notes, TRIM(CONCAT(COALESCE(u.first_name,''),' ',COALESCE(u.last_name,''))) AS client_name
+  const sql = `SELECT b.billID, b.bill_number, b.orderID, r.cleaning_type, r.image1, r.image2, r.image3, r.image4, r.image5,  o.orderID, o.address, o.number_of_rooms, o.date, b.price, b.notes, TRIM(CONCAT(COALESCE(u.first_name,''),' ',COALESCE(u.last_name,''))) AS client_name
     FROM Orders o
     JOIN Quote q ON q.quoteID = o.quoteID AND q.response_number = o.response_number
     JOIN Requests r ON r.requestID = q.requestID
@@ -32,7 +32,25 @@ async function payBill(req, res) {
     const data = req.body;
     console.log(data);
     
+    // create Bill response for paid bill
+    const sqlBill = `
+      INSERT INTO Bill (billID, bill_number, orderID, price, status, notes)
+      VALUES (?, ?, ?, ?, ?, (
+        SELECT notes FROM Bill b2 WHERE b2.billID = ? AND b2.bill_number = ? LIMIT 1
+      ));
+    `;
 
+    connection.query(sqlBill, [
+      data.billID,
+      data.bill_number + 1,
+      data.orderID,
+      data.price,
+      data.status,
+      data.billID,
+      data.bill_number
+    ]);
+
+    // add bill to Payment table
     const sql = `
         INSERT INTO Payment (billID, bill_number, price, status, card_number, cvv, ex_date)
         VALUES (?, ?, ?, ?, ?, ?, ?)
@@ -40,7 +58,7 @@ async function payBill(req, res) {
 
     connection.query(sql, [
         data.billID,
-        data.bill_number,
+        data.bill_number + 1,
         data.price,
         data.status,
         data.card_number,

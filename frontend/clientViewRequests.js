@@ -5,31 +5,31 @@ let rows = [];
 
 document.addEventListener("DOMContentLoaded", async () => {
   const API = "http://localhost:5050";
-  const list = document.getElementById("unpaidItems");
-  const payBillBtn = document.getElementById("pay-bill-btn");
+  const list = document.getElementById("request-items");
 
   //gets the request from the backend and stores it in a json format, goes through each row to get the client name and id
   try {
-    const res = await fetch(`${API}/listUnpaidBills`, {
+    const res = await fetch(`${API}/listClientRequests`, {
       method: "GET",
       credentials: "include",
     });
 
     rows = await res.json();
-    rows = rows.unpaidBills;
-    if (rows.length == 0) {
-        list.innerHTML = "No unpaid bills to display";
-        return;
-    }
+    rows = rows.rows;
     console.log(rows);
+    if (rows.length == 0) {
+      list.innerHTML = "No requests to display";
+      return;
+    }
 
     list.innerHTML = rows
       .map(
         (r) => `
       <li>
-        <button class="row"
-        data-data="${encodeURIComponent(JSON.stringify(r))}">
-          Bill ID: ${r.billID}
+        <button class="row" data-id="${
+          r.requestID
+        }" data-data="${encodeURIComponent(JSON.stringify(r))}">
+          Request ID ${r.requestID}
         </button>
       </li>
     `
@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       .join("");
   } catch (e) {
     console.error(e);
-    list.innerHTML = `<li>Failed to load unpaid bills</li>`;
+    list.innerHTML = `<li>Failed to load requests</li>`;
   }
 
   //handles the click on the clients name on the request
@@ -50,6 +50,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       document.getElementById("d-name").textContent = r.client_name;
       document.getElementById("d-address").textContent = r.address || "—";
       document.getElementById("d-rooms").textContent = r.number_of_rooms ?? "—";
+      document.getElementById("d-status").textContent = r.status ?? "unknown status";
       const dateObj = new Date(r.date);
       // Format the date and time for datetime-local input
       const year = dateObj.getFullYear();
@@ -59,9 +60,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       const minutes = String(dateObj.getMinutes()).padStart(2, "0");
 
       document.getElementById("d-date").textContent = formatDate(r.date);
-      document.getElementById("d-budget").textContent = formatMoney(r.price);
-      document.getElementById("d-cleaning").textContent =
-        r.cleaning_type || "—";
+      document.getElementById("d-budget").textContent = formatMoney(r.budget);
+      document.getElementById("d-cleaning").textContent = r.cleaning_type || "—";
       document.getElementById("d-notes").textContent = r.notes;
 
       //gets the images
@@ -79,39 +79,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         img.alt = `Image ${i}`;
         img.onerror = () => img.remove();
         imageContainer.appendChild(img);
-    }
-
-    payBillBtn.addEventListener("click", async (e) => {
-      const cardNumber = document.getElementById("card-number-input").value;
-      const cvv = document.getElementById("cvv-input").value;
-      const exDate = document.getElementById("ex-date-input").value;      
-  
-      const res = await fetch(`${API}/payBill`, {
-        method: "POST",
-        credentials: "include",
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            billID: r.billID,
-            bill_number: r.bill_number,
-            orderID: r.orderID,
-            price: r.price,
-            status: "paid",
-            card_number: cardNumber,
-            cvv: cvv,
-            ex_date: exDate
-        })
-      });      
-
-      const resJson = await res.json();
-
-      if (resJson.success) alert("Payment completed successfully!");
-      else alert("Error completing payment " + res.error)
-    });
+      }
     } catch (err) {
       console.error("Failed to load details/images:", err);
       document.getElementById("d-name").textContent = "Error loading details";
       document.getElementById("d-images").innerHTML = "";
     }
   });
-
 }); //end top event listener, you probably dont want to include anything outside this scope

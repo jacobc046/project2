@@ -11,33 +11,24 @@
       
     <main class="layout">
       <aside class="pane left">
-        <h2>Quotes</h2>
-        <ul id="quoteItems" class="list"></ul>
+        <h2>View Requests</h2>
+        <ul id="request-items" class="list"></ul>
       </aside>
 
       <section class="pane right" id="detail">
         <h2 id="d-name">Select a request</h2>
-        <p><strong>QUOTE STATUS:</strong> <span id="d-status">—</span></p>
+        <p><strong>REQUEST STATUS:</strong> <span id="d-status">—</span></p>
         <p><strong>Address:</strong> <span id="d-address">—</span></p>
         <p><strong>Rooms:</strong> <span id="d-rooms">—</span></p>
         <p><strong>Cleaning Type:</strong> <span id="d-cleaning">—</span></p>
-        <p><strong>Date:</strong> <input id="d-date" type="datetime-local"></p>
-        <p><strong>Budget:</strong> <input id="d-budget" type="number"></p>
-        <p><strong>Notes:</strong> <textarea id="d-notes"></textarea></p>
+        <p><strong>Date:</strong> <span id="d-date"></span>-</p>
+        <p><strong>Budget:</strong> <span id="d-budget">-</span></p>
+        <p><strong>Notes:</strong> <span id="d-notes">-</span></p>
         <div><strong>Photos:</strong></div>
         <div id="d-images"></div>
-
-        <button id="editBtn">Submit Edits</button>
-        <button id="rejectBtn">Reject</button>
-        <button id="approveBtn">Approve</button>
-
-        <div class="section-box">
-          <h2>Quote History</h2>
-          <ul id="q-history"></ul>
-        </div>
       </section>
     </main>
 
-    <script type="module" src="clientQuotes.js" defer></script>
+    <script type="module" src="clientViewRequests.js" defer></script>
   </body>
 </html>

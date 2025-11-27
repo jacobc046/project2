@@ -130,10 +130,27 @@ async function rejectRequest(req, res) {
   });
 }
 
+async function listClientRequests(req, res) {
+  const sql = `
+    SELECT * FROM Requests 
+    WHERE client_id = ${req.session.clientId}
+    AND status <> 'quoted';
+  `;
+
+  connection.query(sql, [], (err, result) => {
+    if (err) {
+      console.log(err);
+      return res.status(500).json({ success: false, error: err.message });
+    } 
+    return res.json({ success: true, rows: result });
+  });
+}
+
 module.exports = {
   cleaningRequest,
   listRequests,
   getRequestById,
   getRequestImage,
   rejectRequest,
+  listClientRequests
 };

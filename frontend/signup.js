@@ -4,7 +4,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
   if (signUpBtn) {
     // make sure it exists
-    signUpBtn.onclick = async function () {
+    signUpBtn.onclick = async function (event) {
+      event.preventDefault()
       const firstNameInput = document.querySelector("#first-name-input");
       const lastNameInput = document.querySelector("#last-name-input");
       const passwordInput = document.querySelector("#password-input");

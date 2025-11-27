@@ -86,6 +86,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       document.getElementById("d-name").textContent = r.client_name;
       document.getElementById("d-address").textContent = r.address || "—";
       document.getElementById("d-rooms").textContent = r.number_of_rooms ?? "—";
+      document.getElementById("d-status").textContent = r.status ?? "unknown status";
       const dateObj = new Date(r.date);
       // Format the date and time for datetime-local input
       const year = dateObj.getFullYear();
@@ -111,7 +112,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const buf = r[`image${i}`];
         if (!buf || !buf.data) continue; // if null or empty, skip
 
-        const blob = new Blob([new Uint8Array(buf)], { type: "image/png" }); // or "image/png"
+        const blob = new Blob([new Uint8Array(buf.data)], { type: "image/png" }); // or "image/png"
         const img = document.createElement("img");
         img.src = URL.createObjectURL(blob);
         img.alt = `Image ${i}`;
@@ -190,6 +191,12 @@ document.addEventListener("DOMContentLoaded", async () => {
           alert("Approval failed: " + data.message);
         }
       });
+
+    const createOrder = await fetch(`${API}/quotes/${data.quoteID}/accept`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+      });
   });
 
   const rejectBtn = document.getElementById("rejectBtn");
@@ -206,7 +213,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         quoteID: data.quoteID,
         requestID: data.requestID,
         response_number: data.response_number + 1,
-        status: "rejected",
+        status: "canceled",
         budget: data.price,
         date: data.date,
         notes: data.notes,
