@@ -213,7 +213,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         quoteID: data.quoteID,
         requestID: data.requestID,
         response_number: data.response_number + 1,
-        status: "cancelled",
+        status: "canceled",
         budget: data.price,
         date: data.date,
         notes: data.notes,

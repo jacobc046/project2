@@ -60,7 +60,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       const minutes = String(dateObj.getMinutes()).padStart(2, "0");
 
       document.getElementById("d-date").textContent = formatDate(r.date);
-      document.getElementById("d-budget").value = formatMoney(r.price);
+      document.getElementById("d-budget").textContent = formatMoney(r.budget);
       document.getElementById("d-cleaning").textContent = r.cleaning_type || "—";
       document.getElementById("d-notes").textContent = r.notes;
 

@@ -405,7 +405,7 @@ async function listQuotes(req, res) {
     FROM Requests r, Quote q
     JOIN Users u ON u.client_id = q.client_id
     WHERE q.requestID = r.requestID
-    AND (q.status = 'awaiting client' OR q.status = 'cancelled')
+    AND (q.status = 'awaiting client' OR q.status = 'canceled')
     AND q.client_id = ${req.session.clientId}
     AND q.response_number = (
         SELECT MAX(q2.response_number)
