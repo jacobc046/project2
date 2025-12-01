@@ -1,3 +1,5 @@
+--table creation
+
 CREATE TABLE `Users` (
   `client_id` int(11) NOT NULL AUTO_INCREMENT,
   `email` varchar(50) NOT NULL,
@@ -40,7 +42,7 @@ CREATE TABLE `Quote` (
   `quoteID` bigint(20) NOT NULL AUTO_INCREMENT,
   `requestID` bigint(20) DEFAULT NULL,
   `response_number` int(11) NOT NULL,
-  `status` enum('awaiting client','awaiting admin','accepted','cancelled') NOT NULL,
+  `status` enum('awaiting client','awaiting admin','accepted','canceled') NOT NULL,
   `price` decimal(10,2) NOT NULL,
   `date` datetime NOT NULL,
   `notes` text DEFAULT NULL,
@@ -95,3 +97,356 @@ CREATE TABLE `Payment` (
   KEY `key1` (`billID`,`bill_number`),
   CONSTRAINT `key1` FOREIGN KEY (`billID`, `bill_number`) REFERENCES `Bill` (`billID`, `bill_number`)
 )
+
+--  ** signup queries **
+-- create new user
+INSERT INTO Users (email, password, first_name, last_name, phone_number, street, city, state, zipcode, card_number, ex_date, cvv, account_type)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+
+-- signin queries
+-- check if the users email matches a record in the DB 
+SELECT client_id, email, password, account_type FROM Users WHERE email = ?
+
+-- ** request queries **
+-- create cleaning request 
+INSERT INTO 
+      Requests(client_id, address, number_of_rooms, date, budget, notes, cleaning_type, image1, image2, image3, image4, image5) 
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+-- list requests for admin side
+SELECT r.requestID,
+           CONCAT(u.first_name, ' ', u.last_name) AS client_name
+    FROM Requests r
+    JOIN Users u ON u.client_id = r.client_id
+    ORDER BY r.requestID ASC
+
+-- get request by ID for admin side
+SELECT r.requestID,
+           CONCAT(u.first_name, ' ', u.last_name) AS client_name,
+           r.address,
+           r.number_of_rooms,
+           r.date,
+           r.budget,
+           r.cleaning_type,
+           r.notes,
+           r.status
+    FROM Requests r
+    JOIN Users u ON u.client_id = r.client_id
+    WHERE r.requestID = ?
+    LIMIT 1
+
+-- get images for a request for admin side
+SELECT image${n} AS img FROM Requests WHERE requestID = ? LIMIT 1
+
+-- reject request 
+UPDATE Requests
+      SET status = 'rejected',
+          rejected_note = ?
+      WHERE requestID = ? 
+      LIMIT 1
+
+-- list requests for clients based on client id of signed-in client
+SELECT * FROM Requests 
+    WHERE client_id = ${req.session.clientId}
+    AND status <> 'quoted'
+
+-- ** quote queries **
+-- get next response_number for a given quoteID 
+SELECT COALESCE(MAX(response_number), 0) + 1 AS nextRN
+    FROM Quote
+    WHERE quoteID = ?
+
+-- select request by requestID to obtain status and budget
+SELECT budget, status, client_id FROM Requests WHERE requestID = ? LIMIT 1
+
+-- get max response number for a quote based on a requestID and increment it by 1
+SELECT COALESCE(MAX(response_number), 0) + 1 AS nextNo FROM Quote WHERE requestID = ?
+
+-- insert quote into table 
+INSERT INTO Quote (requestID, response_number, status, price, date, notes, client_id)
+        VALUES (?, ?, 'awaiting client', ?, ?, ?, ?)
+
+-- update the request status to quoted
+UPDATE Requests SET status = 'quoted' WHERE requestID = ? LIMIT 1
+
+-- list all quotes for the admin side
+  SELECT 
+  q.quoteID,
+  q.requestID,
+  q.response_number,
+  q.status,
+  q.price,
+  q.date,
+  q.notes,
+  TRIM(CONCAT(COALESCE(u.first_name,''),' ',COALESCE(u.last_name,''))) AS client_name,
+  r.address
+FROM Quote q
+INNER JOIN (
+  SELECT quoteID, MAX(response_number) AS max_rn
+  FROM Quote
+  GROUP BY quoteID
+) latest
+  ON latest.quoteID = q.quoteID
+ AND latest.max_rn  = q.response_number
+INNER JOIN Requests r ON r.requestID = q.requestID
+INNER JOIN Users    u ON u.client_id = r.client_id
+ORDER BY q.quoteID ASC;
+
+-- get a specific quote by quoteID 
+SELECT
+      q.quoteID,
+      q.requestID,
+      q.response_number,
+      q.status AS quote_status,
+      q.price,
+      q.date,
+      q.notes,
+      TRIM(CONCAT(COALESCE(u.first_name,''),' ',COALESCE(u.last_name,''))) AS client_name,
+      r.address
+    FROM Quote q
+    INNER JOIN Requests r ON r.requestID = q.requestID
+    INNER JOIN Users   u  ON u.client_id = r.client_id
+    WHERE q.quoteID = ?
+    ORDER BY q.response_number DESC  
+    LIMIT 1
+
+-- get information from original request to use in quote negotiation
+SELECT q.requestID, r.budget, r.date
+    FROM Quote q
+    JOIN Requests r ON r.requestID = q.requestID
+    WHERE q.quoteID = ?
+    ORDER BY q.response_number ASC
+    LIMIT 1
+
+-- create a new quote response (negotiation)
+INSERT INTO Quote (quoteID, requestID, response_number, status, price, date, notes, client_id)
+        SELECT ?, requestID, ?, 'awaiting client', ?, ?, ?, client_id
+        FROM Quote WHERE quoteID = ? LIMIT 1
+
+-- get previous quote responses for a quote based on quoteID
+SELECT
+      q.quoteID,
+      q.requestID,
+      q.response_number,
+      q.status AS quote_status,
+      q.price,
+      q.date,
+      q.notes
+    FROM Quote q
+    WHERE q.quoteID = ?
+    ORDER BY q.response_number ASC
+
+-- find latest version of quote 
+SELECT requestID, response_number
+    FROM Quote
+    WHERE quoteID = ?
+    ORDER BY response_number DESC
+    LIMIT 1
+
+-- update latest quote status when cancelling
+UPDATE Quote
+      SET status = 'canceled'
+      WHERE quoteID = ? AND response_number = ?
+      LIMIT 1
+
+-- update latest quote status when accepting 
+UPDATE Quote
+      SET status = 'accepted'
+      WHERE quoteID = ? AND response_number = ?
+      LIMIT 1
+
+-- list quotes based on the currently signed-in client ID on the client side
+ SELECT DISTINCT r.requestID,
+        CONCAT(u.first_name, ' ', u.last_name) AS client_name,
+        r.address,
+        r.number_of_rooms,
+        q.date,
+        q.price,
+        q.status,
+        r.cleaning_type,
+        q.notes,
+        q.requestID,
+        q.quoteID,
+        q.response_number,
+        r.image1,
+        r.image2,
+        r.image3,
+        r.image4,
+        r.image5
+    FROM Requests r, Quote q
+    JOIN Users u ON u.client_id = q.client_id
+    WHERE q.requestID = r.requestID
+    AND (q.status = 'awaiting client' OR q.status = 'canceled')
+    AND q.client_id = ${req.session.clientId}
+    AND q.response_number = (
+        SELECT MAX(q2.response_number)
+        FROM Quote q2
+        WHERE q2.quoteID = q.quoteID
+        GROUP BY q2.quoteID
+    )
+
+-- submit quote negotiation from client side
+INSERT INTO Quote (quoteID, requestID, response_number, status, price, date, notes, client_id) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+
+-- ** order queries **
+-- list orders on client side based on currently signed in client
+SELECT r.cleaning_type, r.image1, r.image2, r.image3, r.image4, r.image5,  o.orderID, o.address, o.number_of_rooms, o.date, o.price, o.notes, TRIM(CONCAT(COALESCE(u.first_name,''),' ',COALESCE(u.last_name,''))) AS client_name
+    FROM Orders o JOIN Quote q on q.quoteID = o.quoteID AND q.response_number = o.response_number
+    JOIN Requests r ON r.requestID = q.requestID
+    JOIN Users u ON u.client_id = r.client_id 
+    WHERE u.client_id = ${req.session.clientId}
+    ORDER BY o.orderID ASC 
+
+-- list all orders on admin side
+SELECT r.cleaning_type, r.image1, r.image2, r.image3, r.image4, r.image5,  o.orderID, o.address, o.number_of_rooms, o.date, o.price, o.notes, TRIM(CONCAT(COALESCE(u.first_name,''),' ',COALESCE(u.last_name,''))) AS client_name
+    FROM Orders o JOIN Quote q on q.quoteID = o.quoteID AND q.response_number = o.response_number
+    JOIN Requests r ON r.requestID = q.requestID
+    JOIN Users u ON u.client_id = r.client_id 
+    ORDER BY o.orderID ASC 
+
+-- get specific order by orderID
+SELECT o.orderID, o.address, o.number_of_rooms, o.date, o.price, o.notes, TRIM(CONCAT(COALESCE(u.first_name,''),' ',COALESCE(u.last_name,''))) AS client_name, r.image1, r.image2, r.image3, r.image4, r.image5
+  FROM Orders o JOIN Quote q on q.quoteID = o.quoteID AND q.response_number = o.response_number
+  JOIN Requests r ON r.requestID = q.requestID
+  JOIN Users u ON u.client_id = r.client_id
+  WHERE o.orderID = ? 
+  LIMIT 1
+
+-- ** bill queries **
+-- get next bill_number for a given order 
+SELECT COALESCE(MAX(bill_number), 0) + 1 AS nextNum
+    FROM Bill
+    WHERE orderID = ?
+
+-- select an order based on orderID
+SELECT orderID, price, date, notes
+    FROM Orders
+    WHERE orderID = ?
+    LIMIT 1
+
+-- insert a bill negotiation from the admin side
+INSERT INTO Bill (bill_number, orderID, price, status, date_issued, notes)
+        VALUES (?, ?, ?, 'awaiting client', NOW(), NULL)
+
+-- get latest version of bill negotiation 
+SELECT billID, bill_number, orderID, price, status, date_issued, notes
+    FROM Bill
+    WHERE orderID = ?
+    ORDER BY bill_number DESC
+    LIMIT 1 
+
+-- get history of bill (all negotiations)
+SELECT billID, bill_number, orderID, price, status, date_issued, notes
+      FROM Bill
+      WHERE orderID = ?
+      ORDER BY bill_number ASC
+
+-- negotiate bill from the client side
+INSERT INTO Bill (billID, bill_number, orderID, price, status, date_issued, notes)
+        VALUES (?, ?, ?, ?, ?, NOW(), ?)
+
+-- ** payment queries **
+-- list unpaid bills based on the signed-in client's ID
+SELECT b.billID, b.bill_number, b.orderID, r.cleaning_type, r.image1, r.image2, r.image3, r.image4, r.image5,  o.orderID, o.address, o.number_of_rooms, o.date, b.price, b.notes, TRIM(CONCAT(COALESCE(u.first_name,''),' ',COALESCE(u.last_name,''))) AS client_name
+    FROM Orders o
+    JOIN Quote q ON q.quoteID = o.quoteID AND q.response_number = o.response_number
+    JOIN Requests r ON r.requestID = q.requestID
+    JOIN Users u ON u.client_id = r.client_id 
+    JOIN Bill b ON b.orderID = o.orderID
+    WHERE u.client_id = ${req.session.clientId}
+    AND b.billID NOT IN (
+        SELECT billID FROM Payment
+    ) AND b.bill_number = (
+        SELECT MAX(b2.bill_number)
+        FROM Bill b2
+        WHERE b2.billID = b.billID
+        GROUP BY b2.billID
+    )
+    ORDER BY o.orderID ASC 
+
+-- submit payment information and complete payment
+INSERT INTO Payment (billID, bill_number, price, status, card_number, cvv, ex_date)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+
+-- create response in Bill table when a bill is paid 
+INSERT INTO Bill (billID, bill_number, orderID, price, status, notes)
+      VALUES (?, ?, ?, ?, ?, (
+        SELECT notes FROM Bill b2 WHERE b2.billID = ? AND b2.bill_number = ? LIMIT 1
+      ));
+
+-- * Anna's dashboard **
+-- get frequent clients
+SELECT u.client_id, u.email, u.first_name, u.last_name, COUNT(o.client_id) AS frequency
+    FROM Users u, Orders o 
+    WHERE o.client_id = u.client_id 
+    GROUP BY u.client_id 
+    HAVING COUNT(o.client_id) = (
+      SELECT MAX(order_count) FROM (  
+        SELECT COUNT(*) AS order_count
+        FROM Orders
+        GROUP BY client_id
+      ) AS counts);`
+
+-- get uncommitted clients
+SELECT r.client_id, u.first_name, u.last_name, u.email
+    FROM Requests r, Users u
+    WHERE u.client_id = r.client_id
+    AND r.client_id NOT IN (
+    SELECT client_id FROM Orders
+    ) GROUP BY client_id
+    HAVING COUNT(*) >= 3;
+
+-- get accepted quotes for this month
+SELECT u.first_name, u.last_name, u.email, q.*, r.requestID
+    FROM Quote q, Users u, Requests r
+    WHERE q.status = 'accepted'
+    AND q.requestID = r.requestID
+    AND r.client_id = u.client_id
+    AND MONTH(q.date) = MONTH(NOW())
+    AND YEAR(q.date) = YEAR(NOW());
+
+-- get prospective clients 
+SELECT u.email, u.first_name, u.last_name, u.client_id
+  FROM Users u
+  WHERE u.client_id 
+  NOT IN (
+    SELECT client_id FROM Requests
+  ) 
+  AND u.account_type <> 'admin';
+
+-- get largest clients
+SELECT r.*, u.email, u.first_name, u.last_name
+  FROM Requests r, Users u
+  WHERE r.number_of_rooms = (
+    SELECT MAX(number_of_rooms) FROM Requests
+  )
+  AND r.client_id = u.client_id;
+
+-- get overdue bills
+SELECT DISTINCT o.client_id, b.billID, b.date_issued, b.orderID, u.email, u.first_name, u.last_name, u.client_id, o.address, o.number_of_rooms, o.price, o.orderID
+  FROM Bill b, Users u, Orders o
+  WHERE b.billID NOT IN (
+    SELECT billID FROM Payment
+  ) 
+  AND b.orderID = o.orderID
+  AND o.client_id = u.client_id
+  AND b.date_issued <= DATE_SUB(CURDATE(), INTERVAL 7 DAY);
+
+- get bad clients
+SELECT DISTINCT o.client_id, u.email, u.first_name, u.last_name
+  FROM Bill b
+  JOIN Orders o ON o.orderID = b.orderID
+  JOIN Users u ON u.client_id = o.client_id
+  WHERE b.billID NOT IN (
+    SELECT billID FROM Payment
+  ) AND o.client_id = u.client_id;
+
+-- get good clients
+SELECT DISTINCT u.first_name, u.last_name, u.client_id, u.email
+  FROM Users u, Bill b, Payment p, Orders o
+  WHERE o.client_id = u.client_id
+  AND b.orderID = o.orderID
+  AND p.billID = b.billID
+  AND p.status = 'paid'
+  AND p.date_paid <= b.date_issued - INTERVAL 24 HOUR
